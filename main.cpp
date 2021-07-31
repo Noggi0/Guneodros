@@ -7,14 +7,20 @@
 
 #include "Entity.hpp"
 #include "EntityManager.hpp"
-#include "Component.hpp"
-#include "SystemManager.hpp"
-#include "Systems.hpp"
-#include "Movement.hpp"
+#include "Components/Component.hpp"
+#include "Systems/SystemManager.hpp"
+#include "Systems/Systems.hpp"
+#include "Systems/Movement.hpp"
 
 EntityManager EM;
 
-int main (int ac, char **av) {
+/*int main(void)
+{
+    Position pos;
+    std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+}*/
+
+int main () {
     Movement mvt;
     EM.registerSystem(&mvt);
     std::vector<Entity> entities(MAX_ENTITES);
@@ -22,12 +28,14 @@ int main (int ac, char **av) {
         entity = EM.NewEntity();
         Position pos;
         Velocity vel;
+        Rigidbody rb;
         EM.AddComponent(entity, &pos);
         EM.AddComponent(entity, &vel);
+        EM.AddComponent(entity, &rb);
         vel.Vy = -1.0;
     }
     std::cout << "filled" << std::endl;
-    for (int i = 0; i < 100000; i++) {
+    for (uint64_t i = 0; i < UINT16_MAX; i++) {
         EM.update();
     }
 }

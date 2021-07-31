@@ -6,7 +6,7 @@
 #include <iostream>
 
 using Entity = uint32_t;
-const Entity MAX_ENTITES = 1000;
+const Entity MAX_ENTITES = 100000;
 
 using ComponentType = std::uint8_t;
 const ComponentType MAX_COMPONENT = 32;
