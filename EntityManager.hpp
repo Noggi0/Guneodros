@@ -24,12 +24,14 @@ class EntityManager
 			this->sysMgr = new SystemManager;
 			this->elapsed = std::chrono::high_resolution_clock::now();
 		};
+
 		/**
-		 * @return the number of entities available.
+		 * @return the number of entities currently in use.
 		 */
 		Entity getAliveEntities() {
 			return this->AliveEntities;
 		};
+
 		/**
 		 * Creates a new emtpy Entity.
 		 * @return the created Entity.
@@ -45,6 +47,7 @@ class EntityManager
 				return (-1);
 			}
 		};
+
 		/**
 		 * Deletes the designated Entity.
 		 * @param ID Entity to delete.
@@ -61,6 +64,7 @@ class EntityManager
 				this->sysMgr->notifyDelete(ID);
 			}
 		};
+
 		/**
 		 * Adds a new component to the given Entity.
 		 * @param ID Entity.
@@ -71,6 +75,7 @@ class EntityManager
 				this->componentMap.at(ID).push_back(component);
 			this->sysMgr->notifySystems(ID, component->tag);
 		};
+
 		/**
 		 * Registers a new System to the SystemManager.
 		 * @param sys System to be added.
@@ -78,6 +83,7 @@ class EntityManager
 		void registerSystem(ISystem *sys) {
 			this->sysMgr->addSystem(sys);
 		};
+
 		/**
 		 * Updates every system.
 		 */
@@ -87,13 +93,15 @@ class EntityManager
 				this->elapsed = std::chrono::high_resolution_clock::now();
 			}
 		};
+
 		/**
 		 * Returns the time since last frame.
 		 * @return deltaTime - float.
 		 */
 		float getDeltaTime() const {
 			return this->deltaTime;
-		}
+		};
+
 		/**
 		 * Check and returns the Component attached to the given Entity.
 		 * @tparam T Type of the target Component.
@@ -111,7 +119,8 @@ class EntityManager
 			}
 			IComponent *err = new Crashed();
 			return *static_cast<T*>(err);
-		}
+		};
+		
 		/**
 		 * EntityManager's destructor.
 		 */

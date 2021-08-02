@@ -4,12 +4,22 @@
 #include "../Entity.hpp"
 #include <string>
 
+/**
+ * Component's Interface.
+ * Every Component needs to derivate from this Interface.
+ * For now, it only contains a tag.
+ */ 
 class IComponent {
     public:
         virtual ~IComponent() = default;
         std::string tag;
 };
 
+
+/**
+ * Default Component.
+ * A Crashed object is returned if we cannot resolve the type of the component for a given Entity.
+ */
 class Crashed : public IComponent {
     public:
         Crashed() {
