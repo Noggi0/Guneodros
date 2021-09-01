@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2020
-** main.cpp
-** File description:
-** main
-*/
-
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 #include "Components/Component.hpp"
@@ -22,7 +15,6 @@ EntityManager EM;
 }*/
 
 int main () {
-    Vec3<int> intV;
     Movement mvt;
     EM.registerSystem(&mvt);
     std::vector<Entity> entities(MAX_ENTITES);

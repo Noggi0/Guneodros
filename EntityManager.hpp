@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include <chrono>
+#include <memory>
 
 class EntityManager  
 {
