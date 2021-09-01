@@ -3,11 +3,12 @@
 
 #include "../Entity.hpp"
 #include <string>
+#include <memory>
 
 /**
  * Component's Interface.
  * Every Component needs to derivate from this Interface.
- * For now, it only contains a tag.
+ * For now, it only contains a tag. It is used to handle Components generically.
  */ 
 class IComponent {
     public:
@@ -19,6 +20,7 @@ class IComponent {
 /**
  * Default Component.
  * A Crashed object is returned if we cannot resolve the type of the component for a given Entity.
+ * It is used to detect error, but it shouldn't happen at all.
  */
 class Crashed : public IComponent {
     public:
@@ -66,8 +68,11 @@ class Rotation : public IComponent {
 
 class Rigidbody : public IComponent {
     public:
-        Rigidbody() {
+        explicit Rigidbody() {
             this->tag = "Rigidbody";
+        };
+        Rigidbody(bool gravity) {
+            this->subjectToGravity = gravity;
         };
         ~Rigidbody() {};
         bool subjectToGravity = true;
@@ -95,6 +100,28 @@ class Model3D : public IComponent {
         };
         ~Model3D() {};
         std::string pathToModel;
+};
+
+class Camera : public IComponent {
+    public:
+        Camera() {
+
+        };
+        ~Camera() {
+
+        };
+        int x, y, z;
+        std::unique_ptr<IComponent> lookAt; // TODO : Maybe change the type to a Character Type. Gotta dive into this once Renderer is done.
+};
+
+class Character : public IComponent {
+    public:
+        Character() {
+            // TODO : Define what are the Character's caracteristics (no pun intended).
+        };
+        ~Character() {
+
+        };
 };
 
 #endif /* !COMPONENT_HPP */

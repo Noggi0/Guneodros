@@ -9,20 +9,22 @@
 
 class ISystem {
         public:
+            // Update Method, where all logic will be. Systems gotta implement this method.
             virtual void update() = 0;
+
             virtual ~ISystem() = default;
+
             void tryAdd(Entity ID, std::string tag) {
                 if (std::find(this->required.begin(), this->required.end(), tag) != this->required.end() && std::find(this->entityList.begin(), this->entityList.end(), ID) == this->entityList.end())
                     entityList.push_back(ID);
             };
+
             void tryDelete(Entity ID) {
                 std::vector<Entity>::iterator it;
-                std::cout << "size : " << this->entityList.size() << std::endl;
-                if ((it = std::find(this->entityList.begin(), this->entityList.end(), ID)) != this->entityList.end()) {
+                if ((it = std::find(this->entityList.begin(), this->entityList.end(), ID)) != this->entityList.end())
                     entityList.erase(it);
-                    std::cout << "size : " << this->entityList.size() << std::endl;
-                }
             };
+
             std::string tag;
         protected:
             std::list<std::string> required;

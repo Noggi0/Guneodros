@@ -11,6 +11,7 @@
 #include "Systems/SystemManager.hpp"
 #include "Systems/Systems.hpp"
 #include "Systems/Movement.hpp"
+#include "Utils/types.hpp"
 
 EntityManager EM;
 
@@ -21,6 +22,7 @@ EntityManager EM;
 }*/
 
 int main () {
+    Vec3<int> intV;
     Movement mvt;
     EM.registerSystem(&mvt);
     std::vector<Entity> entities(MAX_ENTITES);
