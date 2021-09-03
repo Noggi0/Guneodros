@@ -23,7 +23,7 @@ class Vec3 {
         static T dotProduct(Vec3<T> v1, Vec3<T> v2) {
             return (v1._x * v2._x) + (v1._y * v2._y) + (v1._z * v2._z);
         };
-        T getMagnitude() {
+        const T getMagnitude() const {
             return std::sqrt((this->_x * this->_x) + (this->_y * this->_y) + (this->_z * this->_z));
         };
         void normalize() {
@@ -72,7 +72,7 @@ class Vec3 {
 
 template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 class Vec2 {
-        public:
+    public:
         explicit Vec2() {
             this->_x = 0;
             this->_y = 0;
@@ -88,7 +88,7 @@ class Vec2 {
         static T dotProduct(Vec2<T> v1, Vec2<T> v2) {
             return (v1._x * v2._x) + (v1._y * v2._y);
         };
-        T getMagnitude() {
+        const T getMagnitude() const {
             return std::sqrt((this->_x * this->_x) + (this->_y * this->_y));
         };
         void normalize() {
