@@ -1,10 +1,10 @@
 #ifndef MOVEMENT_HPP_
 #define MOVEMENT_HPP_
 
-#include "Systems.hpp"
-#include "../EntityManager.hpp"
+#include "./Systems.hpp"
+#include "../Core/EntityManager.hpp"
 
-extern EntityManager EM;
+extern EntityManager Engine;
 
 class Movement : public ISystem {
     public:
@@ -14,10 +14,10 @@ class Movement : public ISystem {
         };
         void update() {
             for (auto it = this->entityList.begin(); it != this->entityList.end(); ++it) {
-                auto &Pos = EM.getComponent<Position>((*it), "Position");
-                auto &Vel = EM.getComponent<Velocity>((*it), "Velocity");
-                auto &Rb = EM.getComponent<Rigidbody>((*it), "Rigidbody");
-                float deltaTime = EM.getDeltaTime();
+                auto &Pos = Engine.getComponent<Position>((*it), "Position");
+                auto &Vel = Engine.getComponent<Velocity>((*it), "Velocity");
+                auto &Rb = Engine.getComponent<Rigidbody>((*it), "Rigidbody");
+                float deltaTime = Engine.getDeltaTime();
 
                 Pos.x += Vel.Vx * deltaTime;
                 Pos.y += Vel.Vy * deltaTime;

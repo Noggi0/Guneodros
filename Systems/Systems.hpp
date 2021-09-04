@@ -1,7 +1,7 @@
 #ifndef SYSTEMS_HPP
 #define SYSTEMS_HPP
 
-#include "../Entity.hpp"
+#include "../Core/Entity.hpp"
 #include <vector>
 #include <list>
 #include <algorithm>

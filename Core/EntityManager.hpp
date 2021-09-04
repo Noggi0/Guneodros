@@ -1,9 +1,10 @@
 #ifndef ENTITY_MANAGER_HPP
 #define ENTITY_MANAGER_HPP
 
-#include "Entity.hpp"
-#include "Components/Component.hpp"
-#include "Systems/SystemManager.hpp"
+#include "./Entity.hpp"
+#include "../Components/Component.hpp"
+#include "./SystemManager.hpp"
+#include "./InputManager.hpp"
 #include <queue>
 #include <unordered_map>
 #include <vector>
@@ -22,6 +23,7 @@ class EntityManager
 				AvailableEntities.push(entity);
 				this->componentMap[entity];
 			}
+			this->InputMgr = new InputManager;
 			this->sysMgr = new SystemManager;
 			this->elapsed = std::chrono::high_resolution_clock::now();
 		};
@@ -90,10 +92,19 @@ class EntityManager
 		 */
 		void update() {
 			if ((this->deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - this->elapsed).count()) > this->clock) {
+				this->InputMgr->update();
 				this->sysMgr->update();
 				this->elapsed = std::chrono::high_resolution_clock::now();
 			}
 		};
+
+		/**
+		 * Returns whether the key is pressed or not.
+		 * @param key Keycode to check.
+		 */
+		bool isKeyPressed(int key) {
+			return this->InputMgr->isKeyPressed(key);
+		}
 
 		/**
 		 * Returns the time since last frame.
@@ -133,6 +144,7 @@ class EntityManager
 		uint32_t AliveEntities;
 		std::unordered_map<int, std::vector<IComponent *>> componentMap;
 		SystemManager *sysMgr;
+		InputManager *InputMgr;
 		float clock = 1 / 60.0f;
 		float deltaTime;
 		std::chrono::_V2::high_resolution_clock::time_point elapsed;

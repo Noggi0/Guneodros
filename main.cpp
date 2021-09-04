@@ -1,12 +1,12 @@
-#include "Entity.hpp"
-#include "EntityManager.hpp"
+#include "./Core/Entity.hpp"
+#include "./Core/EntityManager.hpp"
 #include "Components/Component.hpp"
-#include "Systems/SystemManager.hpp"
+#include "./Core/SystemManager.hpp"
 #include "Systems/Systems.hpp"
 #include "Systems/Movement.hpp"
 #include "Utils/types.hpp"
 
-EntityManager EM;
+EntityManager Engine;
 
 /*int main(void)
 {
@@ -16,20 +16,22 @@ EntityManager EM;
 
 int main () {
     Movement mvt;
-    EM.registerSystem(&mvt);
+    Engine.registerSystem(&mvt);
     std::vector<Entity> entities(MAX_ENTITES);
     for (auto entity : entities) {
-        entity = EM.NewEntity();
+        entity = Engine.NewEntity();
         Position pos;
         Velocity vel;
         Rigidbody rb;
-        EM.AddComponent(entity, &pos);
-        EM.AddComponent(entity, &vel);
-        EM.AddComponent(entity, &rb);
+        Engine.AddComponent(entity, &pos);
+        Engine.AddComponent(entity, &vel);
+        Engine.AddComponent(entity, &rb);
         vel.Vy = -1.0;
     }
     std::cout << "filled" << std::endl;
-    for (uint64_t i = 0; i < UINT16_MAX; i++) {
-        EM.update();
+    while (true) {
+        Engine.update();
+        if (Engine.isKeyPressed('B'))
+            std::cout << "B IS PRESSED" << std::endl;
     }
 }

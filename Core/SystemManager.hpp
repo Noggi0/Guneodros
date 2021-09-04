@@ -1,8 +1,8 @@
 #ifndef SYSTEM_MANAGER_HPP
 #define SYSTEM_MANAGER_HPP
 
-#include "../Entity.hpp"
-#include "Systems.hpp"
+#include "./Entity.hpp"
+#include "../Systems/Systems.hpp"
 #include <vector>
 
 class SystemManager {

@@ -1,7 +1,7 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-#include "../Entity.hpp"
+#include "../Core/Entity.hpp"
 #include <string>
 #include <memory>
 
@@ -15,7 +15,6 @@ class IComponent {
         virtual ~IComponent() = default;
         std::string tag;
 };
-
 
 /**
  * Default Component.
