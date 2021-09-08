@@ -23,8 +23,8 @@ class EntityManager
 				AvailableEntities.push(entity);
 				this->componentMap[entity];
 			}
-			this->InputMgr = new InputManager;
-			this->sysMgr = new SystemManager;
+			this->InputMgr = std::make_unique<InputManager>();
+			this->sysMgr = std::make_unique<SystemManager>();
 			this->elapsed = std::chrono::high_resolution_clock::now();
 		};
 
@@ -137,14 +137,16 @@ class EntityManager
 		 * EntityManager's destructor.
 		 */
 		~EntityManager() {
-			this->sysMgr->~SystemManager();
+			
 		};
 	private:
 		std::queue<Entity> AvailableEntities {};
 		uint32_t AliveEntities;
 		std::unordered_map<int, std::vector<IComponent *>> componentMap;
-		SystemManager *sysMgr;
-		InputManager *InputMgr;
+		// SystemManager *sysMgr;
+		// InputManager *InputMgr;
+		std::unique_ptr<SystemManager> sysMgr;
+		std::unique_ptr<InputManager> InputMgr;
 		float clock = 1 / 60.0f;
 		float deltaTime;
 		std::chrono::_V2::high_resolution_clock::time_point elapsed;
