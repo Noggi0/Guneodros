@@ -2,7 +2,6 @@
 #define ENTITY_HPP
 
 #include <stdint.h>
-#include <cstdlib>
 #include <iostream>
 
 using Entity = uint32_t;
