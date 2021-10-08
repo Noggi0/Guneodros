@@ -41,23 +41,41 @@ class Vec3 {
             T z = (this->_x * mult._y) - (this->_y * mult._x);
             return Vec3<T>(x, y, z);
         };
-        Vec3<T> operator*(const T &mult) {
-            T x = this->_x * mult;
-            T y = this->_y * mult;
-            T z = this->_z * mult;
+        Vec3<T> &operator*(const T &mult) {
+            T x = this->_x * mult._x;
+            T y = this->_y * mult._y;
+            T z = this->_z * mult._z;
             return Vec3<T>(x, y, z);
-        }
-        Vec3<T> operator+(const Vec3<T> &add) {
+        };
+        Vec3<T> &operator*=(const Vec3<T> &mult) {
+            this->_x *= mult._x;
+            this->_y *= mult._y;
+            this->_z *= mult._z;
+            return *this;
+        };
+        Vec3<T> &operator+(const Vec3<T> &add) {
             T x = this->_x + add._x;
             T y = this->_y + add._y;
             T z = this->_z + add._z;
             return Vec3<T>(x, y, z);
         };
-        Vec3<T> operator-(const Vec3<T> &sub) {
+        Vec3<T> &operator+=(const Vec3<T> &add) {
+            this->_x += add._x;
+            this->_y += add._y;
+            this->_z += add._z;
+            return *this;
+        };
+        Vec3<T> &operator-(const Vec3<T> &sub) {
             T x = this->_x - sub._x;
             T y = this->_y - sub._y;
             T z = this->_z - sub._z;
             return Vec3<T>(x, y, z);
+        };
+        Vec3<T> &operator-=(const Vec3<T> &sub) {
+            this->_x -= sub._x;
+            this->_y -= sub._y;
+            this->_z -= sub._z;
+            return *this;
         };
         ~Vec3() {
 
@@ -104,21 +122,36 @@ class Vec2 {
             T y = (this->_x * mult._z) - (this->_z * mult._x);
             return Vec2<T>(x, y);
         };
-        Vec2<T> operator*(const T &mult) {
+        Vec2<T> &operator*(const T &mult) {
             T x = this->_x * mult;
             T y = this->_y * mult;
             return Vec2<T>(x, y);
         };
-        Vec2<T> operator+(const Vec2<T> &add) {
+        Vec2<T> &operator*=(const Vec2<T> &mult) {
+            this->_x *= mult._x;
+            this->_y *= mult._y;
+            return *this;
+        };
+        Vec2<T> &operator+(const Vec2<T> &add) {
             T x = this->_x + add._x;
             T y = this->_y + add._y;
             T z = this->_z + add._z;
             return Vec2<T>(x, y, z);
         };
-        Vec2<T> operator-(const Vec2<T> &sub) {
+        Vec2<T> &operator+=(const Vec2<T> &add) {
+            this->_x += add._x;
+            this->_y += add._y;
+            return *this;
+        };
+        Vec2<T> &operator-(const Vec2<T> &sub) {
             T x = this->_x - sub._x;
             T y = this->_y - sub._y;
             return Vec3<T>(x, y);
+        };
+        Vec2<T> &operator-=(const Vec2<T> &sub) {
+            this->_x -= sub._x;
+            this->_y -= sub._y;
+            return *this;
         };
         ~Vec2() {
 
