@@ -142,11 +142,11 @@ class EntityManager
 	private:
 		std::queue<Entity> AvailableEntities {};
 		uint32_t AliveEntities;
-		std::unordered_map<int, std::vector<IComponent *>> componentMap;
+		std::unordered_map<int, std::vector<IComponent *> > componentMap;
 		SystemManager *sysMgr;
 		InputManager *InputMgr;
 		float clock = 1 / 60.0f;
 		float deltaTime;
-		std::chrono::_V2::high_resolution_clock::time_point elapsed;
+		std::chrono::high_resolution_clock::time_point elapsed;
 };
 #endif /* !ENTITY_MANAGER_HPP */
