@@ -1,24 +1,42 @@
 #include "./EntityManager.hpp"
-
-// #if WIN32
-//     #include <windows.h>
-// #endif
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mouse.h>
 
 class InputManager {
     public:
         InputManager() {
+            this->keyboard_state = SDL_GetKeyboardState(nullptr);
         };
         void update() {
-            // for (int i = 0; i < 256; i++) {
-            //     this->key_state[i] = (GetAsyncKeyState(i) & 0x8000) ? 1 : 0;
-            // }
+            SDL_Event event;
+
+            while (SDL_PollEvent(&event)) {
+                switch (event.type) {
+                    case SDL_QUIT:
+                        this->closeEvent = true;
+                        break;
+                }
+            }
         }
-        bool isKeyPressed(int x) {
-            return key_state[x];
+        const bool getCloseEvent() const {
+            return this->closeEvent;
+        }
+        void registerWindow(SDL_Window *window) {
+            this->window = window;
+        };
+        const bool isKeyPressed(char *x) const {
+            return keyboard_state[SDL_GetScancodeFromName(x)];
         }
         ~InputManager() {
 
         };
     private:
-        bool key_state[256] = {};
+        // Create an associative array corresponding to a "virtual" keyboard,
+        // so we can keep track of multiple presses at once.
+        const Uint8 *keyboard_state;
+
+        SDL_Window *window;
+        bool closeEvent = false;
 };
