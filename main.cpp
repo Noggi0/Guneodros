@@ -32,7 +32,8 @@ int main () {
     Engine.createWindow("Testing Guneodros", 800, 600, true);
     while (Engine.isRunning) {
         Engine.update();
-        if (Engine.isKeyPressed('B'))
+        if (Engine.isKeyPressed("b")) {
             std::cout << "B IS PRESSED" << std::endl;
+        }
     }
 }

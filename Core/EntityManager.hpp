@@ -120,9 +120,9 @@ class EntityManager
 
 		/**
 		 * Returns whether the key is pressed or not.
-		 * @param key Keycode to check.
+		 * @param key Name of the key to check.
 		 */
-		bool isKeyPressed(int key) {
+		const bool isKeyPressed(char *key) {
 			return this->inputMgr->isKeyPressed(key);
 		}
 
@@ -130,7 +130,7 @@ class EntityManager
 		 * Returns the time since last frame.
 		 * @return deltaTime.
 		 */
-		float getDeltaTime() const {
+		const float getDeltaTime() const {
 			return this->deltaTime;
 		};
 
