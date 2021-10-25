@@ -5,6 +5,7 @@
 #include "../Components/Component.hpp"
 #include "./SystemManager.hpp"
 #include "./InputManager.hpp"
+#include "./WindowManager.hpp"
 #include <queue>
 #include <unordered_map>
 #include <vector>
@@ -17,6 +18,7 @@ class EntityManager
         /**
          * EntityManager's constructor.
          * Initialize Entities' container and sets up the clock.
+		 * Also initialize every manager we need to get the engine working.
          */
 		EntityManager() {
 			for (Entity entity = 0; entity < MAX_ENTITES; ++entity) {
@@ -25,7 +27,9 @@ class EntityManager
 			}
 			this->InputMgr = std::make_unique<InputManager>();
 			this->sysMgr = std::make_unique<SystemManager>();
+			this->windowMgr = std::make_unique<WindowManager>();
 			this->elapsed = std::chrono::high_resolution_clock::now();
+			this->isRunning = true;
 		};
 
 		/**
@@ -80,6 +84,19 @@ class EntityManager
 		};
 
 		/**
+		 * Creates a new window or throw an error if a window already exists. 
+		 * Then sends a pointer to that window to the managers who need it.
+		 * 
+		 * @param title Title of the window
+		 * @param width Width of the window
+		 * @param height Height of the window
+		 */
+		void createWindow(std::string title, int width, int height, bool resizable) {
+			this->windowMgr->createWindow(title, width, height, resizable);
+			this->inputMgr->registerWindow(this->windowMgr->getWindow());
+		};
+
+		/**
 		 * Registers a new System to the SystemManager.
 		 * @param sys System to be added.
 		 */
@@ -92,9 +109,12 @@ class EntityManager
 		 */
 		void update() {
 			if ((this->deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - this->elapsed).count()) > this->clock) {
-				this->InputMgr->update();
+				this->inputMgr->update();
 				this->sysMgr->update();
 				this->elapsed = std::chrono::high_resolution_clock::now();
+			}
+			if (this->inputMgr->getCloseEvent()) {
+				this->isRunning = false;
 			}
 		};
 
@@ -103,12 +123,12 @@ class EntityManager
 		 * @param key Keycode to check.
 		 */
 		bool isKeyPressed(int key) {
-			return this->InputMgr->isKeyPressed(key);
+			return this->inputMgr->isKeyPressed(key);
 		}
 
 		/**
 		 * Returns the time since last frame.
-		 * @return deltaTime - float.
+		 * @return deltaTime.
 		 */
 		float getDeltaTime() const {
 			return this->deltaTime;
@@ -147,8 +167,12 @@ class EntityManager
 		// InputManager *InputMgr;
 		std::unique_ptr<SystemManager> sysMgr;
 		std::unique_ptr<InputManager> InputMgr;
+		std::unique_ptr<WindowManager> windowMgr;
+		std::unordered_map<int, std::vector<IComponent *> > componentMap;
 		float clock = 1 / 60.0f;
 		float deltaTime;
-		std::chrono::_V2::high_resolution_clock::time_point elapsed;
+		std::chrono::high_resolution_clock::time_point elapsed;
+	public:
+		bool isRunning;
 };
 #endif /* !ENTITY_MANAGER_HPP */

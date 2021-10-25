@@ -197,4 +197,10 @@ fabric.properties
 .history
 .ionide
 
+
+build/
+.xmake/
+.DS_Store
+
+
 # End of https://www.toptal.com/developers/gitignore/api/c++,clion,visualstudiocode,c

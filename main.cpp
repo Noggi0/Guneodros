@@ -29,7 +29,8 @@ int main () {
         vel.Vy = -1.0;
     }
     std::cout << "filled" << std::endl;
-    while (true) {
+    Engine.createWindow("Testing Guneodros", 800, 600, true);
+    while (Engine.isRunning) {
         Engine.update();
         if (Engine.isKeyPressed('B'))
             std::cout << "B IS PRESSED" << std::endl;
