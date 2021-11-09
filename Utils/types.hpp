@@ -24,7 +24,7 @@ class Vec3 {
             return (v1._x * v2._x) + (v1._y * v2._y) + (v1._z * v2._z);
         };
         const T getMagnitude() const {
-            return std::sqrt((this->_x * this->_x) + (this->_y * this->_y) + (this->_z * this->_z));
+            return sqrt((this->_x * this->_x) + (this->_y * this->_y) + (this->_z * this->_z));
         };
         void normalize() {
             T mag = this->getMagnitude();
@@ -107,7 +107,7 @@ class Vec2 {
             return (v1._x * v2._x) + (v1._y * v2._y);
         };
         const T getMagnitude() const {
-            return std::sqrt((this->_x * this->_x) + (this->_y * this->_y));
+            return sqrt((this->_x * this->_x) + (this->_y * this->_y));
         };
         void normalize() {
             T mag = this->getMagnitude();

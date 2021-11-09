@@ -1,4 +1,5 @@
 #include "./EntityManager.hpp"
+#include "../Utils/types.hpp"
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL.h>
@@ -28,6 +29,11 @@ class InputManager {
         };
         const bool isKeyPressed(char *x) const {
             return keyboard_state[SDL_GetScancodeFromName(x)];
+        }
+        const Vec2<int> getMousePosition() const {
+            Vec2<int> mousePosition;
+            SDL_GetMouseState(&mousePosition._x, &mousePosition._y);
+            return mousePosition;
         }
         ~InputManager() {
 
