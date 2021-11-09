@@ -1,6 +1,8 @@
 #ifndef ENTITY_MANAGER_HPP
 #define ENTITY_MANAGER_HPP
 
+#define SDL_MAIN_HANDLED
+
 #include "./Entity.hpp"
 #include "../Components/Component.hpp"
 #include "./SystemManager.hpp"
@@ -25,7 +27,7 @@ class EntityManager
 				AvailableEntities.push(entity);
 				this->componentMap[entity];
 			}
-			this->InputMgr = std::make_unique<InputManager>();
+			this->inputMgr = std::make_unique<InputManager>();
 			this->sysMgr = std::make_unique<SystemManager>();
 			this->windowMgr = std::make_unique<WindowManager>();
 			this->elapsed = std::chrono::high_resolution_clock::now();
@@ -126,6 +128,10 @@ class EntityManager
 			return this->inputMgr->isKeyPressed(key);
 		}
 
+		const Vec2<int> getMousePos() const {
+			return this->inputMgr->getMousePosition();
+		}
+
 		/**
 		 * Returns the time since last frame.
 		 * @return deltaTime.
@@ -162,11 +168,8 @@ class EntityManager
 	private:
 		std::queue<Entity> AvailableEntities {};
 		uint32_t AliveEntities;
-		std::unordered_map<int, std::vector<IComponent *>> componentMap;
-		// SystemManager *sysMgr;
-		// InputManager *InputMgr;
 		std::unique_ptr<SystemManager> sysMgr;
-		std::unique_ptr<InputManager> InputMgr;
+		std::unique_ptr<InputManager> inputMgr;
 		std::unique_ptr<WindowManager> windowMgr;
 		std::unordered_map<int, std::vector<IComponent *> > componentMap;
 		float clock = 1 / 60.0f;
