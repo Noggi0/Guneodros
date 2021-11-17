@@ -80,9 +80,10 @@ class EntityManager
 		 * @param component Component to be added.
 		 */
 		void AddComponent(Entity ID, IComponent *component) {
-			if (this->componentMap.size() != MAX_COMPONENT)
+			if (this->componentMap.size() != MAX_COMPONENT) {
 				this->componentMap.at(ID).push_back(component);
-			this->sysMgr->notifySystems(ID, component->tag);
+				this->sysMgr->notifySystems(ID, component->tag);
+			}
 		};
 
 		/**
