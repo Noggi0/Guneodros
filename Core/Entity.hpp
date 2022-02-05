@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <iostream>
 
-using Entity = uint32_t;
+using Entity = std::uint16_t;
 const Entity MAX_ENTITES = 10000;
 
 using ComponentType = std::uint8_t;

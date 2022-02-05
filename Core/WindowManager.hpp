@@ -33,6 +33,9 @@ class WindowManager {
         SDL_Window *getWindow() const {
             return this->window;
         }
+        bool isWindowFocused() const {
+            return SDL_GetWindowFlags(this->window) & SDL_WINDOW_INPUT_FOCUS;
+        };
         ~WindowManager() {
             SDL_DestroyWindow(this->window);
             SDL_Quit();
