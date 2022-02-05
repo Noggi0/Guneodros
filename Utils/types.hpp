@@ -163,3 +163,74 @@ class Vec2 {
             return os;
         }
 };
+
+template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+class Matrix2x2 {
+    public:
+        explicit Matrix2x2() {
+            this->_x1 = 0;
+            this->_x2 = 0;
+            this->_y1 = 0;
+            this->_y2 = 0;
+        };
+        Matrix2x2(T x1, T x2, T y1, T y2) {
+            this->_x1 = x1;
+            this->_x2 = x2;
+            this->_y1 = y1;
+            this->_y2 = y2;
+        };
+        Matrix2x2(T i) {
+            this->_x1 = i;
+            this->_x2 = i;
+            this->_y1 = i;
+            this->_y2 = i;
+        }
+        Matrix2x2<T> &operator*(T mult) {
+            T x1 = this->_x1 * mult;
+            T x2 = this->_x2 * mult;
+            T y1 = this->_y1 * mult;
+            T y2 = this->_y2 * mult;
+            return Matrix2x2<T>(x1, x2, y1, y2);
+        };
+        Matrix2x2<T> &operator*=(T mult) {
+            this->_x1 *= mult._x1;
+            this->_x2 *= mult._x2;
+            this->_y1 *= mult._y1;
+            this->_y2 *= mult._y2;
+            return *this;
+        }
+        Matrix2x2<T> &operator+(Matrix2x2<T> add) {
+            T x1 = this->_x1 + add._x1;
+            T x2 = this->_x2 + add._x2;
+            T y1 = this->_y1 + add._y1;
+            T y2 = this->_y2 + add._y2;
+            return Matrix2x2(x1, x2, y1, y2);
+        };
+        Matrix2x2<T> &operator+=(Matrix2x2<T> add) {
+            this->_x1 += add._x1;
+            this->_x2 += add._x2;
+            this->_y1 += add._y1;
+            this->_y2 += add._y2;
+            return *this;
+        };
+        Matrix2x2<T> &operator-(Matrix2x2<T> sub) {
+            T x1 = this->_x1 - add._x1;
+            T x2 = this->_x2 - add._x2;
+            T y1 = this->_y1 - add._y1;
+            T y2 = this->_y2 - add._y2;
+            return Matrix2x2(x1, x2, y1, y2);
+        };
+        Matrix2x2<T> &operator-=(Matrix2x2<T> sub) {
+            this->_x1 -= add._x1;
+            this->_x2 -= add._x2;
+            this->_y1 -= add._y1;
+            this->_y2 -= add._y2;
+            return *this;
+        };
+        T _x1, _x2, _y1, _y2;
+    private:
+        friend std::ostream& operator<<(std::ostream &os, const Matrix2x2<T> m) {
+            os << "[" << m._x1 << ", " << m._x2 << "]" << std::endl << "[" << m._y1 << ", " << m._y2 << "]";
+            return os;
+        }
+};
