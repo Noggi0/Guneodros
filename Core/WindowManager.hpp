@@ -26,9 +26,8 @@ class WindowManager {
                                             width,
                                             height,
                                             (resizable ? SDL_WINDOW_RESIZABLE : 0) | SDL_WINDOW_SHOWN);
-            if (!window) {
+            if (!window)
                 throw std::string("Could not create SDL Window.") + SDL_GetError();
-            }
         };
         SDL_Window *getWindow() const {
             return this->window;

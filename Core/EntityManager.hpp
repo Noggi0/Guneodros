@@ -46,15 +46,15 @@ class EntityManager
 		 * @return the created Entity.
 		 */
 		Entity NewEntity () {
-			if (AvailableEntities.size() > 0) {
-				Entity ID = AvailableEntities.front();
-				AvailableEntities.pop();
-				AliveEntities++;
-				return ID;
-			} else {
-				std::cout << "Too many entities" << std::endl;
-				return (-1);
-			}
+            if (AvailableEntities.empty()) {
+                std::cout << "Too many entities" << std::endl;
+                return -1;
+            }
+
+            Entity ID = AvailableEntities.front();
+            AvailableEntities.pop();
+            AliveEntities++;
+            return ID;
 		};
 
 		/**
@@ -62,16 +62,17 @@ class EntityManager
 		 * @param ID Entity to delete.
 		 */
 		void DeleteEntity(Entity ID) {
-			if (ID > MAX_ENTITES)
-				std::cout << "This entity does not exist" << std::endl;
-			else {
-				AvailableEntities.push(ID);
-				AliveEntities -= 1;
-				int mapSize = this->componentMap.size();
-				this->componentMap.at(ID) = this->componentMap.at(mapSize -1);
-				this->componentMap.erase(mapSize);
-				this->sysMgr->notifyDelete(ID);
-			}
+			if (ID > MAX_ENTITES) {
+                std::cout << "This entity does not exist" << std::endl;
+                return;
+            }
+
+            AvailableEntities.push(ID);
+            AliveEntities -= 1;
+            int mapSize = this->componentMap.size();
+            this->componentMap.at(ID) = this->componentMap.at(mapSize -1);
+            this->componentMap.erase(mapSize);
+            this->sysMgr->notifyDelete(ID);
 		};
 
 		/**
@@ -80,10 +81,11 @@ class EntityManager
 		 * @param component Component to be added.
 		 */
 		void AddComponent(Entity ID, IComponent *component) {
-			if (this->componentMap.size() != MAX_COMPONENT) {
-				this->componentMap.at(ID).push_back(component);
-				this->sysMgr->notifySystems(ID, component->tag);
-			}
+			if (this->componentMap.size() >= MAX_COMPONENT)
+                return;
+
+            this->componentMap.at(ID).push_back(component);
+            this->sysMgr->notifySystems(ID, component->tag);
 		};
 
 		/**

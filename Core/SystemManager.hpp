@@ -22,8 +22,8 @@ class SystemManager {
          * Runs update on every System registered.
          */
         void update() {
-            for (auto it = this->systemList.begin(); it != this->systemList.end(); ++it) {
-                (*it)->update();
+            for (auto system : this->systemList) {
+                system->update();
             }
         };
 
@@ -34,8 +34,8 @@ class SystemManager {
          * @param ID Entity to delete.
          */
         void notifyDelete(Entity ID) {
-            for (auto it = this->systemList.begin(); it != this->systemList.end(); ++it) {
-                (*it)->tryDelete(ID);
+            for (auto system : this->systemList) {
+                system->tryDelete(ID);
             }
         };
 
@@ -47,8 +47,8 @@ class SystemManager {
          * @param tag Component's tag added to the Entity.
          */
         void notifySystems(Entity ID, std::string tag) {
-            for (auto it = this->systemList.begin(); it != this->systemList.end(); ++it) {
-                (*it)->tryAdd(ID, tag);
+            for (auto system : this->systemList) {
+                system->tryAdd(ID, tag);
             }
         };
 

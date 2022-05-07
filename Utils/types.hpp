@@ -214,17 +214,17 @@ class Matrix2x2 {
             return *this;
         };
         Matrix2x2<T> &operator-(Matrix2x2<T> sub) {
-            T x1 = this->_x1 - add._x1;
-            T x2 = this->_x2 - add._x2;
-            T y1 = this->_y1 - add._y1;
-            T y2 = this->_y2 - add._y2;
+            T x1 = this->_x1 - sub._x1;
+            T x2 = this->_x2 - sub._x2;
+            T y1 = this->_y1 - sub._y1;
+            T y2 = this->_y2 - sub._y2;
             return Matrix2x2(x1, x2, y1, y2);
         };
         Matrix2x2<T> &operator-=(Matrix2x2<T> sub) {
-            this->_x1 -= add._x1;
-            this->_x2 -= add._x2;
-            this->_y1 -= add._y1;
-            this->_y2 -= add._y2;
+            this->_x1 -= sub._x1;
+            this->_x2 -= sub._x2;
+            this->_y1 -= sub._y1;
+            this->_y2 -= sub._y2;
             return *this;
         };
         T _x1, _x2, _y1, _y2;

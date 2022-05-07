@@ -13,10 +13,10 @@ class Movement : public ISystem {
             this->required.push_back("Velocity");
         };
         void update() {
-            for (auto it = this->entityList.begin(); it != this->entityList.end(); ++it) {
-                auto &Pos = Engine.getComponent<Position>((*it), "Position");
-                auto &Vel = Engine.getComponent<Velocity>((*it), "Velocity");
-                auto &Rb = Engine.getComponent<Rigidbody>((*it), "Rigidbody");
+            for (auto entityID : this->entityList) {
+                auto &Pos = Engine.getComponent<Position>(entityID, "Position");
+                auto &Vel = Engine.getComponent<Velocity>(entityID, "Velocity");
+                auto &Rb = Engine.getComponent<Rigidbody>(entityID, "Rigidbody");
                 float deltaTime = Engine.getDeltaTime();
 
                 Pos.x += Vel.Vx * deltaTime;
