@@ -1,9 +1,10 @@
 #include "./Core/Entity.hpp"
 #include "./Core/EntityManager.hpp"
 #include "Components/Component.hpp"
-#include "./Core/SystemManager.hpp"
 #include "Systems/Systems.hpp"
 #include "Systems/Movement.hpp"
+#include "Systems/Render.hpp"
+#include "./Core/Logger.hpp"
 
 EntityManager Engine;
 
@@ -16,23 +17,23 @@ EntityManager Engine;
 int main () {
     Movement mvt;
     Engine.registerSystem(&mvt);
-    std::vector<Entity> entities(MAX_ENTITES);
-    for (auto entity : entities) {
-        entity = Engine.NewEntity();
+    std::vector<Entity> entities(MAX_ENTITIES);
+    for (auto& entity : entities) {
+        entity = Engine.newEntity();
         Position pos;
         Velocity vel;
         Rigidbody rb;
-        Engine.AddComponent(entity, &pos);
-        Engine.AddComponent(entity, &vel);
-        Engine.AddComponent(entity, &rb);
+        Engine.addComponent(entity, &pos);
+        Engine.addComponent(entity, &vel);
+        Engine.addComponent(entity, &rb);
         vel.Vy = -1.0;
     }
-    std::cout << "filled" << std::endl;
+    Logger::logInfo("Filled");
     Engine.createWindow("Testing Guneodros", 800, 600, true);
     while (Engine.isRunning) {
         Engine.update();
         if (Engine.isKeyPressed("b")) {
-            std::cout << "B IS PRESSED" << std::endl;
+            Logger::logInfo("B pressed");
         }
     }
 }

@@ -1,6 +1,5 @@
 #include "./EntityManager.hpp"
 #include "../Utils/types.hpp"
-#include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>

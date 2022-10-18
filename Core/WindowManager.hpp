@@ -17,7 +17,7 @@ class WindowManager {
          * @param width width of the window
          * @param height height of the window
          */
-        void createWindow(std::string title, int width, int height, bool resizable) {
+        void createWindow(const std::string& title, int width, int height, bool resizable) {
             if (this->window != nullptr)
                 return;
             this->window = SDL_CreateWindow(title.c_str(),
@@ -27,7 +27,7 @@ class WindowManager {
                                             height,
                                             (resizable ? SDL_WINDOW_RESIZABLE : 0) | SDL_WINDOW_SHOWN);
             if (!window)
-                throw std::string("Could not create SDL Window.") + SDL_GetError();
+                throw std::runtime_error(std::string("Could not create SDL Window.") + SDL_GetError());
         };
         SDL_Window *getWindow() const {
             return this->window;

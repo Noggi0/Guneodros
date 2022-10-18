@@ -9,6 +9,7 @@ elseif is_mode("debug") then
     set_warnings("allextra")
     set_optimize("none")
     set_symbols("debug")
+    add_defines("DEBUG")
 end
 
 add_requires("libsdl")

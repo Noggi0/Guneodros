@@ -9,23 +9,23 @@ extern EntityManager Engine;
 class Movement : public ISystem {
     public:
         Movement() {
-            this->required.push_back("Position");
-            this->required.push_back("Velocity");
+            this->signature.set(Components::TypeToID::Position);
+            this->signature.set(Components::TypeToID::Velocity);
+            this->signature.set(Components::TypeToID::Rigidbody);
         };
         void update() {
-            for (auto entityID : this->entityList) {
-                auto &Pos = Engine.getComponent<Position>(entityID, "Position");
-                auto &Vel = Engine.getComponent<Velocity>(entityID, "Velocity");
-                auto &Rb = Engine.getComponent<Rigidbody>(entityID, "Rigidbody");
+            for (auto &entityID : this->entityList) {
+                auto &Pos = Engine.getComponent<Position>(entityID, Components::TypeToID::Position);
+                auto &Vel = Engine.getComponent<Velocity>(entityID, Components::TypeToID::Velocity);
+                auto &Rb = Engine.getComponent<Rigidbody>(entityID, Components::TypeToID::Rigidbody);
                 float deltaTime = Engine.getDeltaTime();
 
                 Pos.x += Vel.Vx * deltaTime;
                 Pos.y += Vel.Vy * deltaTime;
                 Pos.z += Vel.Vz * deltaTime;
                 
-                if (Rb.tag != "Crashed" && Rb.subjectToGravity) {
+                if (Rb.subjectToGravity)
                     Pos.y += gravity * deltaTime;
-                }
             }
         };
         ~Movement() {
@@ -34,7 +34,7 @@ class Movement : public ISystem {
 
     protected:
     private:
-        const float gravity = -9.81f;
+        static constexpr float gravity = -9.81f;
 };
 
 #endif /* !MOVEMENT_HPP_ */

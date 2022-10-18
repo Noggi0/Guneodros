@@ -8,12 +8,12 @@
 /**
  * Component's Interface.
  * Every Component needs to derivate from this Interface.
- * For now, it only contains a tag. It is used to handle Components generically.
+ * For now, it only contains an ID. It is used to handle Components generically.
  */ 
 class IComponent {
     public:
         virtual ~IComponent() = default;
-        std::string tag;
+        uint8_t id = -1;
 };
 
 /**
@@ -24,9 +24,10 @@ class IComponent {
 class Crashed : public IComponent {
     public:
         Crashed() {
-            this->tag = "Crashed";
+            this->id = -1;
         };
-        ~Crashed(){};
+        ~Crashed() = default;
+
 };
 
 class Position : public IComponent {
@@ -35,9 +36,9 @@ class Position : public IComponent {
             this->x = x;
             this->y = y;
             this->z = z;
-            this->tag = "Position";
+            this->id = 0;
         };
-        ~Position() {};
+        ~Position() = default;
         int x, y, z;
 };
 
@@ -47,19 +48,20 @@ class Velocity : public IComponent {
             this->Vx = x;
             this->Vy = y;
             this->Vz = z;
-            this->tag = "Velocity";
+            this->id = 1;
         };
         ~Velocity() {};
         double Vx, Vy, Vz;
 };
 
 class Rotation : public IComponent {
+    // ! Gotta use quaternions for this one I guess ?
     public:
         Rotation(int x = 0, int y = 0, int z = 0) {
             this->Rx = x;
             this->Ry = y;
             this->Rz = z;
-            this->tag = "Rotation";
+            this->id = 2;
         };
         ~Rotation() {};
         int Rx, Ry, Rz;
@@ -68,10 +70,11 @@ class Rotation : public IComponent {
 class Rigidbody : public IComponent {
     public:
         explicit Rigidbody() {
-            this->tag = "Rigidbody";
+            this->id = 3;
         };
         Rigidbody(bool gravity) {
             this->subjectToGravity = gravity;
+            this->id = 3;
         };
         ~Rigidbody() {};
         bool subjectToGravity = true;
@@ -79,11 +82,11 @@ class Rigidbody : public IComponent {
 
 class Sprite : public IComponent {
     public:
-        Sprite(std::string texture) {
+        Sprite(const std::string& texture) {
             if (texture.empty()) {
                 // TODO: Implement Sprite and Texture loading;
             }
-            this->tag = "Sprite";
+            this->id = 4;
         };
         ~Sprite() {};
         std::string pathToTexture;
@@ -91,11 +94,11 @@ class Sprite : public IComponent {
 
 class Model3D : public IComponent {
     public:
-        Model3D(std::string model) {
+        Model3D(const std::string& model) {
             if (model.empty()) {
                 // TODO: Implement 3D object loading;
             }
-            this->tag = "Model3D";
+            this->id = 5;
         };
         ~Model3D() {};
         std::string pathToModel;
@@ -104,7 +107,7 @@ class Model3D : public IComponent {
 class Camera : public IComponent {
     public:
         Camera() {
-
+            this->id = 6;
         };
         ~Camera() {
 
@@ -116,11 +119,10 @@ class Camera : public IComponent {
 class Character : public IComponent {
     public:
         Character() {
+            this->id = 7;
             // TODO : Define what are the Character's caracteristics (no pun intended).
         };
-        ~Character() {
-
-        };
+        ~Character() {};
 };
 
 #endif /* !COMPONENT_HPP */
