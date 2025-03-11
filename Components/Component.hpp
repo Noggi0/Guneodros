@@ -82,14 +82,15 @@ class Rigidbody : public IComponent {
 
 class Sprite : public IComponent {
     public:
-        Sprite(const std::string& texture) {
-            if (texture.empty()) {
-                // TODO: Implement Sprite and Texture loading;
-            }
+        Sprite(const std::string& texture, int sizeX, int sizeY) {
+            this->pathToTexture = texture;
+            this->sizeX = sizeX;
+            this->sizeY = sizeY;
             this->id = 4;
         };
         ~Sprite() {};
         std::string pathToTexture;
+        int sizeX, sizeY;
 };
 
 class Model3D : public IComponent {

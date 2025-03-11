@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <iostream>
+#include <bitset>
 
 using Entity = std::uint16_t;
 constexpr Entity MAX_ENTITIES = 10000;

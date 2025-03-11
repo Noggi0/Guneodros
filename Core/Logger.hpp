@@ -7,7 +7,7 @@
 class Logger {
     public:
         static void logError(const std::string& error) {
-#ifndef DEBUG
+#ifdef DEBUG
             auto now = std::chrono::system_clock::now();
             auto in_time_t = std::chrono::system_clock::to_time_t(now);
             auto time = strtok(std::ctime(&in_time_t), "\n");
@@ -15,7 +15,7 @@ class Logger {
 #endif
         };
         static void logWarning(const std::string& warning) {
-#ifndef DEBUG
+#ifdef DEBUG
             auto now = std::chrono::system_clock::now();
             auto in_time_t = std::chrono::system_clock::to_time_t(now);
             auto time = strtok(std::ctime(&in_time_t), "\n");
@@ -23,7 +23,7 @@ class Logger {
 #endif
         };
         static void logInfo(const std::string& info) {
-#ifndef DEBUG
+#ifdef DEBUG
             auto now = std::chrono::system_clock::now();
             auto in_time_t = std::chrono::system_clock::to_time_t(now);
             auto time = strtok(std::ctime(&in_time_t), "\n");

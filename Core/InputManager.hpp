@@ -10,13 +10,13 @@ class InputManager {
             this->keyboard_state = SDL_GetKeyboardState(nullptr);
         };
         void update() {
-            SDL_Event event;
-
-            while (SDL_PollEvent(&event)) {
-                switch (event.type) {
+            while (SDL_PollEvent(&this->event)) {
+                switch (this->event.type) {
                     case SDL_QUIT:
                         this->closeEvent = true;
                         break;
+                    default:
+                      break;
                 }
             }
         }
@@ -43,5 +43,6 @@ class InputManager {
         const Uint8 *keyboard_state;
 
         SDL_Window *window;
+        SDL_Event event;
         bool closeEvent = false;
 };

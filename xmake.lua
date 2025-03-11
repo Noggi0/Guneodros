@@ -1,5 +1,3 @@
-add_requires("libsdl")
-
 set_project("Guneodros")
 set_languages("cxx17")
 
@@ -13,8 +11,10 @@ elseif is_mode("debug") then
 end
 
 add_requires("libsdl")
+add_requires("libsdl_image")
 
 target("guneodros")
     set_kind("binary")
     add_files("./main.cpp")
     add_packages("libsdl")
+    add_packages("libsdl_image")

@@ -93,11 +93,11 @@ class EntityManager
             this->entitiesSignature.at(ID).set(component->id, true);
             this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
 
-            Logger::logInfo("Entity signature: " + this->entitiesSignature.at(ID).to_string() );
+            // Logger::logInfo("Entity signature: " + this->entitiesSignature.at(ID).to_string() );
 		};
 
 		/**
-		 * TODO: CHANGE THAT !!
+		 * TODO: CHANGE THAT !! On perd la contiguité des components de l'entité en question.
 		 * Removes a component from the given Entity.
 		 * @param ID Entity.
 		 * @param component Component to be removed.
@@ -124,6 +124,10 @@ class EntityManager
 		void createWindow(std::string title, int width, int height, bool resizable) {
 			this->windowMgr->createWindow(title, width, height, resizable);
 			this->inputMgr->registerWindow(this->windowMgr->getWindow());
+		};
+
+		SDL_Window *getWindow() {
+        	return this->windowMgr->getWindow();
 		};
 
 		/**
