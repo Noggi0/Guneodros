@@ -35,7 +35,7 @@ class SpriteRenderer : public ISystem {
 
                 SDL_Texture *texture = this->textures.loadTexture(this->renderer, sprite.pathToTexture);
 
-                SDL_Rect rect = { position.x, position.y, sprite.sizeX, sprite.sizeY };
+                SDL_Rect rect = { static_cast<int>(position.x), static_cast<int>(position.y), sprite.sizeX, sprite.sizeY };
                 SDL_RenderCopy(this->renderer, texture, nullptr, &rect);
             }
             SDL_RenderPresent(this->renderer);
