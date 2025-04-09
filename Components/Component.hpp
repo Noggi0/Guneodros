@@ -32,14 +32,14 @@ class Crashed : public IComponent {
 
 class Position : public IComponent {
     public:
-        Position(int x = 0, int y = 0, int z = 0) {
+        Position(float x = 0, float y = 0, float z = 0) {
             this->x = x;
             this->y = y;
             this->z = z;
             this->id = 0;
         };
         ~Position() = default;
-        int x, y, z;
+        float x, y, z;
 };
 
 class Velocity : public IComponent {
