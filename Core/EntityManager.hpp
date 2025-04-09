@@ -109,9 +109,9 @@ class EntityManager
 			if (componentPosition != this->componentMap.at(ID).end()) {
 				std::iter_swap(componentPosition, this->componentMap.at(ID).end());
 				//this->componentMap.at(ID).erase(componentPosition);
-				this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
+				this->componentMap.at(ID).pop_back();
 				this->entitiesSignature.at(ID).set(component->id, false);
-                this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
+				this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
 			}
 			Logger::logInfo("Component " + std::to_string(component->id) + " removed from entity " + std::to_string(ID));
 		}
