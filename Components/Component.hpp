@@ -93,37 +93,19 @@ class Sprite : public IComponent {
         int sizeX, sizeY;
 };
 
-class Model3D : public IComponent {
+class BoxCollider : public IComponent
+{
     public:
-        Model3D(const std::string& model) {
-            if (model.empty()) {
-                // TODO: Implement 3D object loading;
-            }
+        BoxCollider(int x = 0, int y = 0, int width = 0, int height = 0) {
+            this->x = x;
+            this->y = y;
+            this->width = width;
+            this->height = height;
             this->id = 5;
         };
-        ~Model3D() {};
-        std::string pathToModel;
-};
-
-class Camera : public IComponent {
-    public:
-        Camera() {
-            this->id = 6;
-        };
-        ~Camera() {
-
-        };
-        int x, y, z;
-        std::unique_ptr<IComponent> lookAt; // TODO : Maybe change the type to a Character Type. Gotta dive into this once Renderer is done.
-};
-
-class Character : public IComponent {
-    public:
-        Character() {
-            this->id = 7;
-            // TODO : Define what are the Character's caracteristics (no pun intended).
-        };
-        ~Character() {};
+        ~BoxCollider() = default;
+        int x, y, width, height;
+        bool triggered = false;
 };
 
 #endif /* !COMPONENT_HPP */

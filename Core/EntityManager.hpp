@@ -18,16 +18,16 @@
 class EntityManager  
 {
 	public:
-        /**
-         * EntityManager's constructor.
-         * Initialize Entities' container and sets up the clock.
+		/**
+		 * EntityManager's constructor.
+		 * Initialize Entities' container and sets up the clock.
 		 * Also initialize every manager we need to get the engine working.
-         */
+		 */
 		EntityManager() {
-            this->componentMap.reserve(MAX_ENTITIES);
-            for (Entity entity = 0; entity < MAX_ENTITIES; ++entity) {
+			this->componentMap.reserve(MAX_ENTITIES);
+			for (Entity entity = 0; entity < MAX_ENTITIES; ++entity) {
 				AvailableEntities.push(entity);
-                this->componentMap[entity];
+				this->componentMap[entity];
 				this->componentMap.at(entity).reserve(MAX_COMPONENT);
 				this->entitiesSignature[entity];
 			}
@@ -51,15 +51,15 @@ class EntityManager
 		 * @return the created Entity.
 		 */
 		Entity newEntity () {
-            if (AvailableEntities.empty()) {
-                Logger::logError("Too many entities");
-                return -1;
-            }
+			if (AvailableEntities.empty()) {
+				Logger::logError("Too many entities");
+				return -1;
+			}
 
-            Entity ID = AvailableEntities.front();
-            AvailableEntities.pop();
-            AliveEntities++;
-            return ID;
+			Entity ID = AvailableEntities.front();
+			AvailableEntities.pop();
+			AliveEntities++;
+			return ID;
 		};
 
 		/**
@@ -68,32 +68,32 @@ class EntityManager
 		 */
 		void deleteEntity(Entity ID) {
 			if (ID > MAX_ENTITIES) {
-                Logger::logError("This entity does not exist");
-                return;
-            }
+				Logger::logError("This entity does not exist");
+				return;
+			}
 
-            AvailableEntities.push(ID);
-            AliveEntities -= 1;
-            int mapSize = this->componentMap.size();
-            this->componentMap.at(ID) = this->componentMap.at(mapSize -1);
-            this->componentMap.erase(mapSize);
-            this->sysMgr->notifyEntityDeleted(ID);
+			AvailableEntities.push(ID);
+			AliveEntities -= 1;
+			int mapSize = this->componentMap.size();
+			this->componentMap.at(ID) = this->componentMap.at(mapSize -1);
+			this->componentMap.erase(mapSize);
+			this->sysMgr->notifyEntityDeleted(ID);
 		};
 
 		/**
 		 * Adds a new component to the given Entity.
 		 * @param ID Entity.
 		 * @param component Component to be added.
-		 */
+		*/
 		void addComponent(Entity ID, IComponent *component) {
 			if (this->componentMap.at(ID).size() >= MAX_COMPONENT)
-                return;
+				return;
 
-            this->componentMap.at(ID).push_back(component);
-            this->entitiesSignature.at(ID).set(component->id, true);
-            this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
+			this->componentMap.at(ID).push_back(component);
+			this->entitiesSignature.at(ID).set(component->id, true);
+			this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
 
-            // Logger::logInfo("Entity signature: " + this->entitiesSignature.at(ID).to_string() );
+			// Logger::logInfo("Entity signature: " + this->entitiesSignature.at(ID).to_string() );
 		};
 
 		/**
@@ -123,6 +123,7 @@ class EntityManager
 		 * @param title Title of the window
 		 * @param width Width of the window
 		 * @param height Height of the window
+		 * @param resizable
 		 */
 		void createWindow(std::string title, int width, int height, bool resizable) {
 			this->windowMgr->createWindow(title, width, height, resizable);
@@ -130,7 +131,7 @@ class EntityManager
 		};
 
 		SDL_Window *getWindow() {
-        	return this->windowMgr->getWindow();
+			return this->windowMgr->getWindow();
 		};
 
 		/**
@@ -138,14 +139,15 @@ class EntityManager
 		 * @param sys System to be added.
 		 */
 		void registerSystem(ISystem *sys) {
-			this->sysMgr->addSystem(std::move(sys));
+			this->sysMgr->addSystem(sys);
 		};
 
 		/**
 		 * Updates every system.
 		 */
 		void update() {
-			if ((this->deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - this->elapsed).count()) > this->clock) {
+			this->deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - this->elapsed).count() / 1000.f;
+			if (this->deltaTime > this->clock) {
 				this->inputMgr->update();
 				this->sysMgr->update();
 				this->elapsed = std::chrono::high_resolution_clock::now();
@@ -202,9 +204,7 @@ class EntityManager
 		/**
 		 * EntityManager's destructor.
 		 */
-		~EntityManager() {
-			
-		};
+		~EntityManager() = default;
 	private:
 		std::queue<Entity> AvailableEntities {};
 		uint32_t AliveEntities;

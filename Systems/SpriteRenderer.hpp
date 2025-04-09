@@ -5,14 +5,12 @@
 #include "../Core/EntityManager.hpp"
 #include "../Core/TextureManager.hpp"
 
-extern EntityManager Engine;
-
 // When finished, rename it to Render2D
 
 /*
-    Render2D should have a handle to the targeted Window. DONE
-    Render2D should use the draw calls for each entity.
-    Render2D should optimize how the sprites are managed (like not loading the texture at every draw call)
+    SpriteRenderer should have a handle to the targeted Window. DONE
+    SpriteRenderer should use the draw calls for each entity. DONE
+    SpriteRenderer should optimize how the sprites are managed (like not loading the texture at every draw call) DONE
  */
 
 class SpriteRenderer : public ISystem {

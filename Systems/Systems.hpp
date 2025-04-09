@@ -18,7 +18,7 @@ class ISystem {
 
             virtual ~ISystem() = default;
 
-            void updateEntityList(Entity ID, const Signature& entitySignature) {
+            virtual void updateEntityList(Entity ID, const Signature& entitySignature) {
                 auto it = std::find(this->entityList.begin(), this->entityList.end(), ID);
                 // Entity doesn't exist in EntityList
                 if (it == this->entityList.end()) {

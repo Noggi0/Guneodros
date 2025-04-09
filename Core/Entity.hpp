@@ -21,9 +21,7 @@ namespace Components {
         Rotation = 2,
         Rigidbody = 3,
         Sprite = 4,
-        Model3D = 5,
-        Camera = 6,
-        Character = 7
+        BoxCollider = 5,
     };
 }
 
