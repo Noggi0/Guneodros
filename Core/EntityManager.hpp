@@ -163,6 +163,11 @@ class EntityManager
 			return this->inputMgr->isKeyPressed(key);
 		}
 
+		const bool isKeyReleased(char *key) const
+		{
+			return this->inputMgr->isKeyReleased(key);
+		}
+
 		const Vec2<int> getMousePos() const {
 			return this->inputMgr->getMousePosition();
 		}
