@@ -98,6 +98,7 @@ class EntityManager
 
 		/**
 		 * TODO: CHANGE THAT !! On perd la contiguité des components de l'entité en question.
+		 * Gotta test, its probably fixed with the iter_swap changes.
 		 * Removes a component from the given Entity.
 		 * @param ID Entity.
 		 * @param component Component to be removed.
@@ -106,7 +107,9 @@ class EntityManager
 			auto componentPosition = std::find(this->componentMap.at(ID).begin(), this->componentMap.at(ID).end(), component);
 			
 			if (componentPosition != this->componentMap.at(ID).end()) {
-				this->componentMap.at(ID).erase(componentPosition);
+				std::iter_swap(componentPosition, this->componentMap.at(ID).end());
+				//this->componentMap.at(ID).erase(componentPosition);
+				this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
 				this->entitiesSignature.at(ID).set(component->id, false);
                 this->sysMgr->notifyEntityModified(ID, this->entitiesSignature.at(ID));
 			}
