@@ -1,7 +1,9 @@
-#include "./EntityManager.hpp"
+#ifndef __WINDOW_MANAGER_HPP__
+#define __WINDOW_MANAGER_HPP__
+
 #include <string>
 #include <SDL2/SDL.h>
-#include <exception>
+#include <stdexcept>
 
 class WindowManager {
     public:
@@ -42,3 +44,5 @@ class WindowManager {
     private:
         SDL_Window *window;
 };
+
+#endif /* __WINDOW_MANAGER_HPP */

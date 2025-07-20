@@ -13,6 +13,8 @@
     SpriteRenderer should optimize how the sprites are managed (like not loading the texture at every draw call) DONE
  */
 
+extern EntityManager Engine;
+
 class SpriteRenderer : public ISystem {
     public:
         SpriteRenderer() {

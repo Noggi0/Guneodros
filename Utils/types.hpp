@@ -118,8 +118,8 @@ class Vec2 {
         };
         // ! operator* overloads may need some refactor, I don't really like how they are implemented atm.
         Vec2<T> operator*(const Vec2<T> &mult) {
-            T x = (this->_y * mult._z) - (this->_z * mult._y);
-            T y = (this->_x * mult._z) - (this->_z * mult._x);
+            T x = (this->_y * mult._x) - (this->_y * mult._y);
+            T y = (this->_x * mult._z) - (this->_x * mult._x);
             return Vec2<T>(x, y);
         };
         Vec2<T> &operator*(const T &mult) {
@@ -135,8 +135,7 @@ class Vec2 {
         Vec2<T> &operator+(const Vec2<T> &add) {
             T x = this->_x + add._x;
             T y = this->_y + add._y;
-            T z = this->_z + add._z;
-            return Vec2<T>(x, y, z);
+            return Vec2<T>(x, y);
         };
         Vec2<T> &operator+=(const Vec2<T> &add) {
             this->_x += add._x;

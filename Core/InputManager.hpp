@@ -1,8 +1,11 @@
-#include "./EntityManager.hpp"
+#ifndef __INPUT_MANAGER_HPP__
+#define __INPUT_MANAGER_HPP__
+
 #include "../Utils/types.hpp"
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
+#include <bitset>
 
 class InputManager {
     public:
@@ -56,3 +59,5 @@ class InputManager {
         SDL_Event event;
         bool closeEvent = false;
 };
+
+#endif /* __INPUT_MANAGER_HPP__ */

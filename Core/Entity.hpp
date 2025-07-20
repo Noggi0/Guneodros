@@ -1,8 +1,7 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-#include <stdint.h>
-#include <iostream>
+#include <cstdint>
 #include <bitset>
 
 using Entity = std::uint16_t;

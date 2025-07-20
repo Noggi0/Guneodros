@@ -2,8 +2,8 @@
 #include "./Core/EntityManager.hpp"
 #include "Components/Component.hpp"
 #include "Systems/Systems.hpp"
-#include "Systems/Movement.hpp"
-#include "Systems/Render.hpp"
+#include "Systems/PhysicsSystem.hpp"
+#include "Systems/SpriteRenderer.hpp"
 #include "./Core/Logger.hpp"
 
 EntityManager Engine;
@@ -15,7 +15,7 @@ EntityManager Engine;
 }*/
 
 int main () {
-    Movement mvt;
+    PhysicsSystem mvt;
     Engine.registerSystem(&mvt);
     std::vector<Entity> entities(MAX_ENTITIES);
     for (auto& entity : entities) {
