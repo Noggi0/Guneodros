@@ -29,12 +29,18 @@ class TextureManager {
         SDL_Texture* getTexture(const std::string& fileName) {
             return textures[fileName];
         };
-        ~TextureManager() {
+        void clear() {
             for (auto&[_, texture] : textures) {
                 SDL_DestroyTexture(texture);
             }
             textures.clear();
         };
+        ~TextureManager() {
+            this->clear();
+        };
+
+        TextureManager(const TextureManager&) = delete;
+        TextureManager &operator=(const TextureManager&) = delete;
     private:
         std::unordered_map<std::string, SDL_Texture *> textures;
 };

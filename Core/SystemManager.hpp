@@ -4,6 +4,8 @@
 #include "./Entity.hpp"
 #include "../Systems/Systems.hpp"
 #include <vector>
+#include <memory>
+#include <utility>
 
 class SystemManager {
     public:
@@ -14,16 +16,16 @@ class SystemManager {
          * Registers a new System.
          * @param system System to add.
          */ 
-        void addSystem(ISystem *system) {
-            this->systemList.push_back(system);
+        void addSystem(std::unique_ptr<ISystem> system) {
+            this->systemList.push_back(std::move(system));
         };
 
         /**
          * Runs update on every System registered.
          */
-        void update() {
+        void update(World &world, float deltaTime) {
             for (auto &system : this->systemList) {
-                system->update();
+                system->update(world, deltaTime);
             }
         };
 
@@ -55,6 +57,6 @@ class SystemManager {
         ~SystemManager() {
         };
     private:
-        std::vector<ISystem *> systemList;
+        std::vector<std::unique_ptr<ISystem>> systemList;
 };
 #endif /* !SYSTEM_MANAGER_HPP */

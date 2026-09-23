@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string>
 
+class World;
+
 class ISystem {
         public:
             // Update Method, where all logic will be. Systems gotta implement this method.
@@ -14,7 +16,7 @@ class ISystem {
                 this->entityList.reserve(MAX_ENTITIES);
             };
 
-            virtual void update() = 0;
+            virtual void update(World &world, float deltaTime) = 0;
 
             virtual ~ISystem() = default;
 

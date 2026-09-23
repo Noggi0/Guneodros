@@ -33,10 +33,10 @@ class InputManager {
         void registerWindow(SDL_Window *window) {
             this->window = window;
         };
-        const bool isKeyPressed(char *x) const {
+        const bool isKeyPressed(const char *x) const {
             return keyboard_state[SDL_GetScancodeFromName(x)];
         }
-        const bool isKeyReleased(char *x) const
+        const bool isKeyReleased(const char *x) const
         {
             return !keyboard_state[SDL_GetScancodeFromName(x)] && previous_keyboard_state[SDL_GetScancodeFromName(x)];
         }
@@ -53,9 +53,9 @@ class InputManager {
         // so we can keep track of multiple presses at once.
         // const Uint8 *keyboard_state;
 
-        std::bitset<256> previous_keyboard_state;
-        std::bitset<256> keyboard_state;
-        SDL_Window *window;
+        std::bitset<SDL_NUM_SCANCODES> previous_keyboard_state;
+        std::bitset<SDL_NUM_SCANCODES> keyboard_state;
+        SDL_Window *window = nullptr;
         SDL_Event event;
         bool closeEvent = false;
 };

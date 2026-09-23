@@ -14,7 +14,6 @@ using Signature = std::bitset<MAX_COMPONENT>;
 
 namespace Components {
     enum TypeToID {
-        Crashed = -1,
         Position = 0,
         Velocity = 1,
         Rotation = 2,

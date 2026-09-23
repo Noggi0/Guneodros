@@ -1,39 +1,25 @@
-#include "./Core/Entity.hpp"
-#include "./Core/EntityManager.hpp"
-#include "Components/Component.hpp"
-#include "Systems/Systems.hpp"
+#include "Core/Application.hpp"
+#include "Core/Logger.hpp"
 #include "Systems/PhysicsSystem.hpp"
 #include "Systems/SpriteRenderer.hpp"
-#include "./Core/Logger.hpp"
 
-EntityManager Engine;
+int main() {
+    Application app("Testing Guneodros -- MAIN");
+    World &world = app.getWorld();
 
-/*int main(void)
-{
-    Position pos;
-    std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
-}*/
-
-int main () {
-    PhysicsSystem mvt;
-    Engine.registerSystem(&mvt);
-    std::vector<Entity> entities(MAX_ENTITIES);
-    for (auto& entity : entities) {
-        entity = Engine.newEntity();
-        Position pos;
-        Velocity vel;
-        Rigidbody rb;
-        Engine.addComponent(entity, &pos);
-        Engine.addComponent(entity, &vel);
-        Engine.addComponent(entity, &rb);
-        vel.Vy = -1.0;
+    for (Entity i = 0; i < MAX_ENTITIES; ++i) {
+        Entity entity = world.createEntity();
+        world.emplace<Position>(entity);
+        world.emplace<Velocity>(entity, 0.0, -1.0, 0.0);
+        world.emplace<Rigidbody>(entity);
     }
+
+    world.addSystem<PhysicsSystem>();
+    world.addSystem<SpriteRenderer>(app.getWindow());
     Logger::logInfo("Filled");
-    Engine.createWindow("Testing Guneodros", 800, 600, true);
-    while (Engine.isRunning) {
-        Engine.update();
-        if (Engine.isKeyPressed("b")) {
+
+    app.run([&app](float) {
+        if (app.getInput().isKeyPressed("b"))
             Logger::logInfo("B pressed");
-        }
-    }
+    });
 }

@@ -8,7 +8,9 @@
 class WindowManager {
     public:
         WindowManager() {
-            SDL_Init(SDL_INIT_VIDEO);
+            SDL_SetMainReady();
+            if (SDL_Init(SDL_INIT_VIDEO) != 0)
+                throw std::runtime_error(std::string("Could not initialize SDL.") + SDL_GetError());
             this->window = nullptr;
         };
         /**
@@ -41,6 +43,8 @@ class WindowManager {
             SDL_DestroyWindow(this->window);
             SDL_Quit();
         };
+        WindowManager(const WindowManager&) = delete;
+        WindowManager &operator=(const WindowManager&) = delete;
     private:
         SDL_Window *window;
 };

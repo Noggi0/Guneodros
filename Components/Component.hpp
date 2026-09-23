@@ -16,20 +16,6 @@ class IComponent {
         uint8_t id = -1;
 };
 
-/**
- * Default Component.
- * A Crashed object is returned if we cannot resolve the type of the component for a given Entity.
- * It is used to detect error, but it shouldn't happen at all.
- */
-class Crashed : public IComponent {
-    public:
-        Crashed() {
-            this->id = -1;
-        };
-        ~Crashed() = default;
-
-};
-
 class Position : public IComponent {
     public:
         Position(float x = 0, float y = 0, float z = 0) {
