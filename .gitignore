@@ -202,5 +202,7 @@ build/
 .xmake/
 .DS_Store
 
+Tests/
+
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,clion,visualstudiocode,c

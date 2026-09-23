@@ -19,14 +19,18 @@ target("guneodros")
     add_packages("libsdl")
     add_packages("libsdl_image")
 
-target("world_tests")
-    set_kind("binary")
-    set_default(false)
-    add_files("./Tests/WorldTests.cpp")
+if os.isfile("Tests/WorldTests.cpp") then
+    target("world_tests")
+        set_kind("binary")
+        set_default(false)
+        add_files("./Tests/WorldTests.cpp")
+end
 
-target("application_tests")
-    set_kind("binary")
-    set_default(false)
-    add_files("./Tests/ApplicationTests.cpp")
-    add_packages("libsdl")
-    add_packages("libsdl_image")
+if os.isfile("Tests/ApplicationTests.cpp") then
+    target("application_tests")
+        set_kind("binary")
+        set_default(false)
+        add_files("./Tests/ApplicationTests.cpp")
+        add_packages("libsdl")
+        add_packages("libsdl_image")
+end
