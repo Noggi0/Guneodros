@@ -2,74 +2,141 @@
 #define COMPONENT_REGISTRY_HPP
 
 #include "../Components/Component.hpp"
+#include "ComponentStorage.hpp"
+#include "ComponentView.hpp"
+#include "ViewsState.hpp"
 #include <algorithm>
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
 #include <utility>
+#include <typeindex>
 
 class ComponentRegistry {
     public:
-        template <class T, class... Args>
+        ComponentRegistry() = default;
+
+        ComponentRegistry(ComponentRegistry &other) = delete;
+        ComponentRegistry &operator=(ComponentRegistry &other) = delete;
+        ComponentRegistry(ComponentRegistry &&other) = delete;
+        ComponentRegistry &operator=(ComponentRegistry &&other) = delete;
+
+        template<typename T, typename... Args>
         T &emplace(Entity ID, Args&&... args) {
-            auto component = std::make_unique<T>(std::forward<Args>(args)...);
-            if (component->id >= MAX_COMPONENT)
-                throw std::out_of_range("Invalid component type");
-            auto &components = this->componentMap[ID];
-            for (const auto &existing : components) {
-                if (existing->id == component->id)
-                    throw std::logic_error("Entity already has this component");
-            }
-            T &result = *component;
-            components.push_back(std::move(component));
-            return result;
-        };
+            if (this->viewsState.hasActiveViews())
+                throw std::logic_error("Cannot modify components while views are active");
+            return ensureStorage<T>().emplace(ID, std::forward<Args>(args)...);
+        }
 
-        template <class T>
-        const T *tryGet(Entity ID) const {
-            auto it = this->componentMap.find(ID);
-            if (it == this->componentMap.end())
-                return nullptr;
-            for (const auto &component : it->second) {
-                if (auto *result = dynamic_cast<const T*>(component.get()))
-                    return result;
-            }
+        template<typename T>
+        const T* tryGet(Entity ID) const {
+            if (auto *storage = getStorage<T>())
+                return storage->tryGet(ID);
             return nullptr;
-        };
+        }
 
-        template <class T>
-        T *tryGet(Entity ID) {
-            return const_cast<T*>(std::as_const(*this).tryGet<T>(ID));
-        };
+        template<typename T>
+        T* tryGet(Entity ID) {
+            if (auto *storage = getStorage<T>())
+                return storage->tryGet(ID);
+            return nullptr;
+        }
 
-        template <class T>
+        template<typename T>
+        const T& get(Entity ID) const {
+            const T* component = tryGet<T>(ID);
+            if (!component)
+                throw std::out_of_range("Entity does not have this component");
+
+            return *component;
+        }
+
+        template<typename T>
+        T& get(Entity ID) {
+            T* component = tryGet<T>(ID);
+            if (!component)
+                throw std::out_of_range("Entity does not have this component");
+
+            return *component;
+        }
+
+        template<typename T>
         void remove(Entity ID) {
-            auto it = this->componentMap.find(ID);
-            if (it == this->componentMap.end())
-                return;
-            auto &components = it->second;
-            components.erase(std::remove_if(components.begin(), components.end(),
-                [](const auto &component) {
-                    return dynamic_cast<T*>(component.get()) != nullptr;
-                }), components.end());
-        };
+            if (this->viewsState.hasActiveViews())
+                throw std::logic_error("Cannot destroy entity while views are active");
+            if (auto *storage = getStorage<T>())
+                storage->remove(ID);
+        }
 
-        Signature getSignature(Entity ID) const {
-            Signature signature;
-            auto it = this->componentMap.find(ID);
-            if (it != this->componentMap.end()) {
-                for (const auto &component : it->second)
-                    signature.set(component->id);
-            }
-            return signature;
-        };
+        template<typename T>
+        void clear() {
+            if (this->viewsState.hasActiveViews())
+                throw std::logic_error("Cannot destroy entity while views are active");
+            if (auto *storage = getStorage<T>())
+                storage->clear();
+        }
 
         void destroyEntity(Entity ID) {
-            this->componentMap.erase(ID);
-        };
+            if (this->viewsState.hasActiveViews())
+                throw std::logic_error("Cannot destroy entity while views are active");
+            for (const auto &entry : componentStorages)
+                entry.second->remove(ID);
+        }
+
+        template<typename T>
+        std::size_t size() const {
+            if (auto *storage = getStorage<T>())
+                return storage->size();
+            return 0;
+        }
+
+        template<typename... Components>
+        ComponentView<Components...> view() {
+            return ComponentView<Components...>(viewsState, getStorage<std::remove_const_t<Components>>()...);
+        }
+
+        template<typename... Components>
+        ComponentView<const Components...> view() const {
+            return ComponentView<const Components...>(viewsState, getStorage<std::remove_const_t<Components>>()...);
+        }
+
+        bool hasActiveViews() const {
+            return this->viewsState.hasActiveViews();
+        }
 
     private:
-        std::unordered_map<Entity, std::vector<std::unique_ptr<IComponent>>> componentMap;
+        template<typename T>
+        ComponentStorage<T> &ensureStorage() {
+            if (auto *storage = getStorage<T>())
+                return *storage;
+            
+            auto storage = std::make_unique<ComponentStorage<T>>();
+            auto [it, ok] = componentStorages.emplace(std::type_index(typeid(T)), std::move(storage));
+
+            if (!ok)
+                throw std::runtime_error("Failed to create component storage for type");
+
+            return *static_cast<ComponentStorage<T>*>(it->second.get());
+        }
+
+        template<typename T>
+        const ComponentStorage<T> *getStorage() const {
+            auto it = componentStorages.find(std::type_index(typeid(T)));
+            if (it == componentStorages.end())
+                return nullptr;
+            return static_cast<const ComponentStorage<T>*>(it->second.get());
+        }
+
+        template<typename T>
+        ComponentStorage<T> *getStorage() {
+            auto it = componentStorages.find(std::type_index(typeid(T)));
+            if (it == componentStorages.end())
+                return nullptr;
+            return static_cast<ComponentStorage<T>*>(it->second.get());
+        }
+
+        std::unordered_map<std::type_index, std::unique_ptr<IComponentStorage>> componentStorages;
+        mutable ViewsState viewsState;
 };
 
 #endif /* !COMPONENT_REGISTRY_HPP */

@@ -16,20 +16,14 @@
 class SpriteRenderer : public ISystem {
     public:
         explicit SpriteRenderer(SDL_Window *window) {
-            this->signature.set(Components::TypeToID::Position);
-            this->signature.set(Components::TypeToID::Sprite);
-
             this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             if (!this->renderer)
                 throw std::runtime_error(std::string("Could not create SpriteRenderer.") + SDL_GetError());
         };
-        void update(World &world, float) override {
+        void update(World &world, float deltaTime) override {
             SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255); // black
             SDL_RenderClear(this->renderer);
-            for (const auto &entity : this->entityList) {
-                const auto &position = world.get<Position>(entity);
-                const auto &sprite = world.get<Sprite>(entity);
-
+            for (auto [EntityId, position, sprite] : world.view<Position, Sprite>()) {
                 SDL_Texture *texture = this->textures.loadTexture(this->renderer, sprite.pathToTexture);
                 if (!texture)
                     continue;

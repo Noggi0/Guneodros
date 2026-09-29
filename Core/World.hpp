@@ -8,14 +8,14 @@
 class World {
     public:
         Entity createEntity() {
+            if (this->components.hasActiveViews())
+                throw std::logic_error("Cannot create entity while views are active");
             Entity ID = this->entities.createEntity();
-            this->systems.notifyEntityModified(ID, Signature{});
             return ID;
         };
 
         void destroyEntity(Entity ID) {
             this->requireEntity(ID);
-            this->systems.notifyEntityDeleted(ID);
             this->components.destroyEntity(ID);
             this->entities.destroyEntity(ID);
         };
@@ -32,7 +32,6 @@ class World {
         T &emplace(Entity ID, Args&&... args) {
             this->requireEntity(ID);
             T &component = this->components.emplace<T>(ID, std::forward<Args>(args)...);
-            this->systems.notifyEntityModified(ID, this->components.getSignature(ID));
             return component;
         };
 
@@ -71,16 +70,11 @@ class World {
         void remove(Entity ID) {
             this->requireEntity(ID);
             this->components.remove<T>(ID);
-            this->systems.notifyEntityModified(ID, this->components.getSignature(ID));
         };
 
         template <class T, class... Args>
         T &addSystem(Args&&... args) {
             auto system = std::make_unique<T>(std::forward<Args>(args)...);
-            for (Entity ID = 0; ID < MAX_ENTITIES; ++ID) {
-                if (this->isAlive(ID))
-                    system->updateEntityList(ID, this->components.getSignature(ID));
-            }
             T &result = *system;
             this->systems.addSystem(std::move(system));
             return result;
@@ -88,6 +82,18 @@ class World {
 
         void update(float deltaTime) {
             this->systems.update(*this, deltaTime);
+        };
+
+        template <class... Components>
+        auto view() {
+            static_assert(sizeof...(Components) > 0, "At least one component type must be specified");
+            return this->components.view<Components...>();
+        };
+
+        template <class... Components>
+        auto view() const {
+            static_assert(sizeof...(Components) > 0, "At least one component type must be specified");
+            return this->components.view<Components...>();
         };
 
     private:

@@ -8,45 +8,22 @@
 class PhysicsSystem : public ISystem {
     public:
         PhysicsSystem() {
-            this->signature.set(Components::TypeToID::Position);
-            this->signature.set(Components::TypeToID::Velocity);
-            this->signature.set(Components::TypeToID::Rigidbody);
         };
 
         void update(World &world, float deltaTime) override {
-            for (const auto &entityID : this->entityList) {
-                auto &Pos = world.get<Position>(entityID);
-                auto &Vel = world.get<Velocity>(entityID);
-                auto &Rb = world.get<Rigidbody>(entityID);
-                auto *collider = world.tryGet<BoxCollider>(entityID);
-                auto previousPos = Pos;
+            for (auto [EntityId, position, velocity, rigidbody] : world.view<Position, Velocity, Rigidbody>()) {
+                auto previousPos = position;
 
-                Pos.x += Vel.Vx * deltaTime;
-                Pos.y += Vel.Vy * deltaTime;
-                if (Rb.subjectToGravity)
-                    Vel.Vy += gravity * deltaTime;
+                position.x += velocity.Vx * deltaTime;
+                position.y += velocity.Vy * deltaTime;
+                if (rigidbody.subjectToGravity)
+                    velocity.Vy += gravity * deltaTime;
 
+                auto *collider = world.tryGet<BoxCollider>(EntityId);
                 if (!collider)
                     continue;
-                collider->x = Pos.x;
-                collider->y = Pos.y;
-                collider->triggered = false;
 
-                for (const auto &otherID : this->entityList) {
-                    if (entityID == otherID)
-                        continue;
-                    auto *secondCollider = world.tryGet<BoxCollider>(otherID);
-                    if (secondCollider && aabb_collides(*collider, *secondCollider)) {
-                        collider->triggered = true;
-                        break;
-                    }
-                }
-
-                if (collider->triggered) {
-                    Pos = previousPos;
-                    collider->x = Pos.x;
-                    collider->y = Pos.y;
-                }
+                // Check collisions
             }
         };
 
