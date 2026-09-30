@@ -35,7 +35,12 @@ private:
     ViewsState *state;
 };
 
-
+/**
+ * Provides a view of entities that have all specified component types.
+ * Iterating over the view yields a tuple containing the entity ID and references to each component.
+ * 
+ * @attention If a storage pointer for a component type is nullptr, the view will be, and will remain empty.
+ */
 template<typename... Components>
 class ComponentView {
     static_assert(sizeof...(Components) > 0, "At least one component type must be specified");
