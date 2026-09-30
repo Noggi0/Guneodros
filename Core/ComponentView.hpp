@@ -54,12 +54,13 @@ public:
 
     class Iterator {
     public:
-        Iterator(const ComponentView& view, std::span<const Entity> entities) : guard(view.viewsState), view(&view), entities(entities), index(0) {
+        Iterator(ViewsState &viewsState, std::tuple<StoragePointer<Components>...> storages, std::span<const Entity> entities)
+            : guard(viewsState), storages(storages), entities(entities), index(0) {
             this->skipUnmatchedEntities();
         };
 
         Reference operator*() const {
-            return this->view->getComponentsForEntity(this->entities[this->index]);
+            return this->getComponentsForEntity(this->entities[this->index]);
         };
 
         Iterator& operator++() {
@@ -74,18 +75,25 @@ public:
     
     private:
         void skipUnmatchedEntities() {
-            while (this->index < this->entities.size() && !this->view->matches(this->entities[this->index])) {
+            while (this->index < this->entities.size() && !std::apply([this](auto *... storage) {
+                return ((storage->has(this->entities[this->index])) && ...);
+            }, this->storages)) {
                 ++this->index;
             }
         }
+        Reference getComponentsForEntity(Entity ID) const {
+            return std::apply([ID](auto *... storage) {
+                return Reference(ID, storage->get(ID)...);
+            }, this->storages);
+        }
         ViewsGuard guard;
-        const ComponentView* view;
+        std::tuple<StoragePointer<Components>...> storages;
         std::span<const Entity> entities;
         std::size_t index;
     };
 
     Iterator begin() const {
-        return Iterator(*this, this->selectCandidateEntities());
+        return Iterator(this->viewsState, this->storages, this->selectCandidateEntities());
     };
 
     std::default_sentinel_t end() const {
@@ -113,17 +121,6 @@ private:
             }, this->storages);
     }
 
-    bool matches(Entity ID) const {
-        return std::apply([ID](auto *... storage) {
-            return ((storage->has(ID)) && ...);
-        }, this->storages);
-    }
-
-    Reference getComponentsForEntity(Entity ID) const {
-        return std::apply([ID](auto *... storage) {
-            return Reference(ID, storage->get(ID)...);
-        }, this->storages);
-    }
     ViewsState &viewsState;
     std::tuple<StoragePointer<Components>...> storages;
 };
