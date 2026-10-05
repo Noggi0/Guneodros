@@ -13,7 +13,7 @@ class Vec3 {
         Vec3(T x, T y, T z) noexcept : _x(x), _y(y), _z(z) {};
         Vec3(T i) noexcept : _x(i), _y(i), _z(i) {};
 
-        static constexpr T dotProduct(Vec3<T> v1, Vec3<T> v2) noexcept {
+        static constexpr T dotProduct(const Vec3<T> &v1, const Vec3<T> &v2) noexcept {
             return (v1._x * v2._x) + (v1._y * v2._y) + (v1._z * v2._z);
         };
         auto getMagnitude() const noexcept {
@@ -36,8 +36,20 @@ class Vec3 {
         Vec3<T> operator*(const Vec3<T> &mult) const noexcept {
             return Vec3<T>(this->_x * mult._x, this->_y * mult._y, this->_z * mult._z);
         };
+        Vec3<T> &operator*=(const Vec3<T> &mult) noexcept {
+            this->_x *= mult._x;
+            this->_y *= mult._y;
+            this->_z *= mult._z;
+            return *this;
+        };
         Vec3<T> operator*(const T &mult) const noexcept {
             return Vec3<T>(this->_x * mult, this->_y * mult, this->_z * mult);
+        };
+        Vec3<T> &operator*=(const T &mult) noexcept {
+            this->_x *= mult;
+            this->_y *= mult;
+            this->_z *= mult;
+            return *this;
         };
         Vec3<T> operator+(const Vec3<T> &add) const noexcept {
             return Vec3<T>(this->_x + add._x, this->_y + add._y, this->_z + add._z);
@@ -60,7 +72,7 @@ class Vec3 {
         ~Vec3() = default;
         T _x, _y, _z;
     private:
-        friend std::ostream& operator<<(std::ostream &os, const Vec3<T> v) {
+        friend std::ostream& operator<<(std::ostream &os, const Vec3<T> &v) {
             os << "x:" <<v._x << ", y:" << v._y << ", z:" << v._z;
             return os;
         }
@@ -73,7 +85,7 @@ class Vec2 {
         Vec2(T x, T y) noexcept : _x(x), _y(y) {};
         Vec2(T i) noexcept : _x(i), _y(i) {};
 
-        static constexpr T dotProduct(Vec2<T> v1, Vec2<T> v2) noexcept {
+        static constexpr T dotProduct(const Vec2<T> &v1, const Vec2<T> &v2) noexcept {
             return (v1._x * v2._x) + (v1._y * v2._y);
         };
         auto getMagnitude() const noexcept {
@@ -95,12 +107,17 @@ class Vec2 {
         Vec2<T> operator*(const Vec2<T> &mult) const noexcept {
             return Vec2<T>(this->_x * mult._x, this->_y * mult._y);
         };
-        Vec2<T> operator*(const T &mult) const noexcept{
-            return Vec2<T>(this->_x * mult, this->_y * mult);
-        };
         Vec2<T> &operator*=(const Vec2<T> &mult) noexcept {
             this->_x *= mult._x;
             this->_y *= mult._y;
+            return *this;
+        };
+        Vec2<T> operator*(const T &mult) const noexcept {
+            return Vec2<T>(this->_x * mult, this->_y * mult);
+        };
+        Vec2<T> &operator*=(const T &mult) noexcept {
+            this->_x *= mult;
+            this->_y *= mult;
             return *this;
         };
         Vec2<T> operator+(const Vec2<T> &add) const noexcept {
@@ -122,7 +139,7 @@ class Vec2 {
         ~Vec2() = default;
         T _x, _y;
     private:
-        friend std::ostream& operator<<(std::ostream &os, const Vec2<T> v) {
+        friend std::ostream& operator<<(std::ostream &os, const Vec2<T> &v) {
             os << "x:" << v._x << ", y:" << v._y;
             return os;
         }
@@ -169,7 +186,7 @@ class Matrix2x2 {
         };
         T _x1, _x2, _y1, _y2;
     private:
-        friend std::ostream& operator<<(std::ostream &os, const Matrix2x2<T> m) {
+        friend std::ostream& operator<<(std::ostream &os, const Matrix2x2<T> &m) {
             os << "[" << m._x1 << ", " << m._x2 << "]" << std::endl << "[" << m._y1 << ", " << m._y2 << "]";
             return os;
         }
