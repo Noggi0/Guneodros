@@ -3,6 +3,7 @@
 
 #include "../Components/Component.hpp"
 #include "Entity.hpp"
+#include "EntityManager.hpp"
 #include "ComponentStorage.hpp"
 #include "ViewsState.hpp"
 #include "../Utils/UniqueTypesInPack.hpp"
@@ -55,12 +56,14 @@ class ComponentView {
 public:
     using Reference = std::tuple<Entity, Components&...>;
 
-    ComponentView(ViewsState &viewsState, StoragePointer<Components>... storages) : viewsState(viewsState), storages({storages...}) {};
+    ComponentView(ViewsState &viewsState, const EntityManager &entities, StoragePointer<Components>... storages)
+        : viewsState(viewsState), entities(entities), storages({storages...}) {};
 
     class Iterator {
     public:
-        Iterator(ViewsState &viewsState, std::tuple<StoragePointer<Components>...> storages, std::span<const Entity> entities)
-            : guard(viewsState), storages(storages), entities(entities), index(0) {
+        Iterator(ViewsState &viewsState, const EntityManager &entityManager,
+            std::tuple<StoragePointer<Components>...> storages, std::span<const EntityIndex> entities)
+            : guard(viewsState), entityManager(entityManager), storages(storages), entities(entities), index(0) {
             this->skipUnmatchedEntities();
         };
 
@@ -86,19 +89,20 @@ public:
                 ++this->index;
             }
         }
-        Reference getComponentsForEntity(Entity ID) const {
-            return std::apply([ID](auto *... storage) {
-                return Reference(ID, storage->get(ID)...);
+        Reference getComponentsForEntity(EntityIndex entity) const {
+            return std::apply([this, entity](auto *... storage) {
+                return Reference(this->entityManager.getEntity(entity), storage->get(entity)...);
             }, this->storages);
         }
         ViewsGuard guard;
+        const EntityManager &entityManager;
         std::tuple<StoragePointer<Components>...> storages;
-        std::span<const Entity> entities;
+        std::span<const EntityIndex> entities;
         std::size_t index;
     };
 
     Iterator begin() const {
-        return Iterator(this->viewsState, this->storages, this->selectCandidateEntities());
+        return Iterator(this->viewsState, this->entities, this->storages, this->selectCandidateEntities());
     };
 
     std::default_sentinel_t end() const {
@@ -106,13 +110,13 @@ public:
     };
 
 private:
-    std::span<const Entity> selectCandidateEntities() const {
+    std::span<const EntityIndex> selectCandidateEntities() const {
         return std::apply([](auto *... storage)
-                -> std::span<const Entity> {
+                -> std::span<const EntityIndex> {
                 if (((storage == nullptr) || ...))
                     return {};
 
-                std::array<std::span<const Entity>, sizeof...(Components)> candidates {
+                std::array<std::span<const EntityIndex>, sizeof...(Components)> candidates {
                     storage->getEntities()...
                 };
 
@@ -127,6 +131,7 @@ private:
     }
 
     ViewsState &viewsState;
+    const EntityManager &entities;
     std::tuple<StoragePointer<Components>...> storages;
 };
 

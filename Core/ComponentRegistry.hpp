@@ -22,50 +22,48 @@ class ComponentRegistry {
         ComponentRegistry &operator=(ComponentRegistry &&other) = delete;
 
         template<typename T, typename... Args>
-        T &emplace(Entity ID, Args&&... args) {
+        T &emplace(EntityIndex entity, Args&&... args) {
             if (this->viewsState.hasActiveViews())
                 throw std::logic_error("Cannot modify components while views are active");
-            return ensureStorage<T>().emplace(ID, std::forward<Args>(args)...);
+            return ensureStorage<T>().emplace(entity, std::forward<Args>(args)...);
         }
 
         template<typename T>
-        const T* tryGet(Entity ID) const {
+        const T* tryGet(EntityIndex entity) const {
             if (auto *storage = getStorage<T>())
-                return storage->tryGet(ID);
+                return storage->tryGet(entity);
             return nullptr;
         }
 
         template<typename T>
-        T* tryGet(Entity ID) {
+        T* tryGet(EntityIndex entity) {
             if (auto *storage = getStorage<T>())
-                return storage->tryGet(ID);
+                return storage->tryGet(entity);
             return nullptr;
         }
 
         template<typename T>
-        const T& get(Entity ID) const {
-            const T* component = tryGet<T>(ID);
+        const T& get(EntityIndex entity) const {
+            const T* component = tryGet<T>(entity);
             if (!component)
                 throw std::out_of_range("Entity does not have this component");
-
             return *component;
         }
 
         template<typename T>
-        T& get(Entity ID) {
-            T* component = tryGet<T>(ID);
+        T& get(EntityIndex entity) {
+            T* component = tryGet<T>(entity);
             if (!component)
                 throw std::out_of_range("Entity does not have this component");
-
             return *component;
         }
 
         template<typename T>
-        void remove(Entity ID) {
+        void remove(EntityIndex entity) {
             if (this->viewsState.hasActiveViews())
                 throw std::logic_error("Cannot destroy entity while views are active");
             if (auto *storage = getStorage<T>())
-                storage->remove(ID);
+                storage->remove(entity);
         }
 
         template<typename T>
@@ -76,11 +74,11 @@ class ComponentRegistry {
                 storage->clear();
         }
 
-        void destroyEntity(Entity ID) {
+        void destroyEntity(EntityIndex entity) {
             if (this->viewsState.hasActiveViews())
                 throw std::logic_error("Cannot destroy entity while views are active");
             for (const auto &entry : componentStorages)
-                entry.second->remove(ID);
+                entry.second->remove(entity);
         }
 
         template<typename T>
@@ -91,13 +89,13 @@ class ComponentRegistry {
         }
 
         template<typename... Components>
-        ComponentView<Components...> view() {
-            return ComponentView<Components...>(viewsState, getStorage<std::remove_const_t<Components>>()...);
+        ComponentView<Components...> view(const EntityManager &entities) {
+            return ComponentView<Components...>(viewsState, entities, getStorage<std::remove_const_t<Components>>()...);
         }
 
         template<typename... Components>
-        ComponentView<const Components...> view() const {
-            return ComponentView<const Components...>(viewsState, getStorage<std::remove_const_t<Components>>()...);
+        ComponentView<const Components...> view(const EntityManager &entities) const {
+            return ComponentView<const Components...>(viewsState, entities, getStorage<std::remove_const_t<Components>>()...);
         }
 
         bool hasActiveViews() const {

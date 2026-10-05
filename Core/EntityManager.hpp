@@ -2,43 +2,58 @@
 #define ENTITY_MANAGER_HPP
 
 #include "Entity.hpp"
+#include <array>
+#include <bitset>
+#include <limits>
 #include <queue>
 #include <stdexcept>
 
 class EntityManager {
     public:
         EntityManager() {
-            for (Entity ID = 0; ID < MAX_ENTITIES; ++ID)
-                this->availableEntities.push(ID);
+            for (std::size_t index = 0; index < MAX_ENTITIES; ++index)
+                this->availableEntities.push(static_cast<EntityIndex>(index));
         };
 
         Entity createEntity() {
             if (this->availableEntities.empty())
                 throw std::runtime_error("Too many entities");
-            Entity ID = this->availableEntities.front();
+            const EntityIndex index = this->availableEntities.front();
             this->availableEntities.pop();
-            this->aliveEntities.set(ID);
-            return ID;
+            this->aliveEntities.set(index);
+            return { index, this->generations[index] };
         };
 
-        void destroyEntity(Entity ID) {
-            if (!this->isAlive(ID))
+        void destroyEntity(Entity entity) {
+            if (!this->isAlive(entity))
                 throw std::out_of_range("This entity does not exist");
-            this->availableEntities.push(ID);
-            this->aliveEntities.reset(ID);
+            if (this->generations[entity.index] != std::numeric_limits<EntityGeneration>::max()) {
+                this->availableEntities.push(entity.index);
+                ++this->generations[entity.index];
+            }
+            this->aliveEntities.reset(entity.index);
         };
 
-        bool isAlive(Entity ID) const {
-            return ID < MAX_ENTITIES && this->aliveEntities[ID];
+        bool isAlive(Entity entity) const noexcept {
+            return entity.index < MAX_ENTITIES
+                && this->aliveEntities[entity.index]
+                && this->generations[entity.index] == entity.generation;
         };
 
-        Entity getAliveEntities() const {
-            return static_cast<Entity>(this->aliveEntities.count());
+        Entity getEntity(EntityIndex index) const {
+            if (index >= MAX_ENTITIES || !this->aliveEntities[index])
+                throw std::out_of_range("This entity does not exist");
+            return { index, this->generations[index] };
+        };
+
+        std::size_t getAliveEntities() const {
+            return this->aliveEntities.count();
         };
 
     private:
-        std::queue<Entity> availableEntities;
+        std::queue<EntityIndex> availableEntities;
         std::bitset<MAX_ENTITIES> aliveEntities;
+        std::array<EntityGeneration, MAX_ENTITIES> generations {};
 };
 
 #endif /* !ENTITY_MANAGER_HPP */

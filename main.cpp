@@ -2,12 +2,13 @@
 #include "Core/Logger.hpp"
 #include "Systems/PhysicsSystem.hpp"
 #include "Systems/SpriteRenderer.hpp"
+#include "Utils/types.hpp"
 
 int main() {
     Application app("Testing Guneodros -- MAIN");
     World &world = app.getWorld();
 
-    for (Entity i = 0; i < MAX_ENTITIES; ++i) {
+    for (std::size_t i = 0; i < MAX_ENTITIES; ++i) {
         Entity entity = world.createEntity();
         world.emplace<Position>(entity);
         world.emplace<Velocity>(entity, 0.0, -1.0, 0.0);

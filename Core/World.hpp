@@ -10,13 +10,12 @@ class World {
         Entity createEntity() {
             if (this->components.hasActiveViews())
                 throw std::logic_error("Cannot create entity while views are active");
-            Entity ID = this->entities.createEntity();
-            return ID;
+            return this->entities.createEntity();
         };
 
         void destroyEntity(Entity ID) {
             this->requireEntity(ID);
-            this->components.destroyEntity(ID);
+            this->components.destroyEntity(ID.index);
             this->entities.destroyEntity(ID);
         };
 
@@ -24,25 +23,25 @@ class World {
             return this->entities.isAlive(ID);
         };
 
-        Entity getAliveEntities() const {
+        std::size_t getAliveEntities() const {
             return this->entities.getAliveEntities();
         };
 
         template <class T, class... Args>
         T &emplace(Entity ID, Args&&... args) {
             this->requireEntity(ID);
-            T &component = this->components.emplace<T>(ID, std::forward<Args>(args)...);
+            T &component = this->components.emplace<T>(ID.index, std::forward<Args>(args)...);
             return component;
         };
 
         template <class T>
         T *tryGet(Entity ID) {
-            return this->isAlive(ID) ? this->components.tryGet<T>(ID) : nullptr;
+            return this->isAlive(ID) ? this->components.tryGet<T>(ID.index) : nullptr;
         };
 
         template <class T>
         const T *tryGet(Entity ID) const {
-            return this->isAlive(ID) ? this->components.tryGet<T>(ID) : nullptr;
+            return this->isAlive(ID) ? this->components.tryGet<T>(ID.index) : nullptr;
         };
 
         template <class T>
@@ -69,7 +68,7 @@ class World {
         template <class T>
         void remove(Entity ID) {
             this->requireEntity(ID);
-            this->components.remove<T>(ID);
+            this->components.remove<T>(ID.index);
         };
 
         template <class T, class... Args>
@@ -87,13 +86,13 @@ class World {
         template <class... Components>
         auto view() {
             static_assert(sizeof...(Components) > 0, "At least one component type must be specified");
-            return this->components.view<Components...>();
+            return this->components.view<Components...>(this->entities);
         };
 
         template <class... Components>
         auto view() const {
             static_assert(sizeof...(Components) > 0, "At least one component type must be specified");
-            return this->components.view<Components...>();
+            return this->components.view<Components...>(this->entities);
         };
 
     private:

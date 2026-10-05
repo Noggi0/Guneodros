@@ -14,9 +14,8 @@ constexpr std::size_t EMPTY = -1;
 class IComponentStorage {
     public:
         virtual ~IComponentStorage() = default;
-        virtual void remove(Entity ID) = 0;
+        virtual void remove(EntityIndex entity) = 0;
 };
-
 
 template<typename T>
 class ComponentStorage : public IComponentStorage {
@@ -34,14 +33,14 @@ public:
     ComponentStorage& operator=(ComponentStorage&&) = delete;
 
     template<typename... Args>
-    T &emplace(Entity ID, Args&&... args) {
-        if (ID >= sparse.size())
+    T &emplace(EntityIndex entity, Args&&... args) {
+        if (entity >= sparse.size())
             throw std::out_of_range("Entity ID exceeds maximum entities");
-        if (sparse[ID] != EMPTY)
+        if (sparse[entity] != EMPTY)
             throw std::logic_error("Entity already has this component");
 
         const std::size_t index = data.size();
-        entities.push_back(ID);
+        entities.push_back(entity);
         
         try {
             data.emplace_back(std::forward<Args>(args)...);
@@ -50,45 +49,45 @@ public:
             throw;
         }
 
-        sparse[ID] = index;
+        sparse[entity] = index;
         return data.back();
     }
 
-    const T* tryGet(Entity ID) const {
-        if (ID >= sparse.size() || sparse[ID] == EMPTY)
+    const T* tryGet(EntityIndex entity) const {
+        if (entity >= sparse.size() || sparse[entity] == EMPTY)
             return nullptr;
-        return &data[sparse[ID]];
+        return &data[sparse[entity]];
     }
 
-    T* tryGet(Entity ID)  {
-        if (ID >= sparse.size() || sparse[ID] == EMPTY)
+    T* tryGet(EntityIndex entity) {
+        if (entity >= sparse.size() || sparse[entity] == EMPTY)
             return nullptr;
-        return &data[sparse[ID]];
+        return &data[sparse[entity]];
     }
 
-    const T& get(Entity ID) const {
-        auto component = tryGet(ID);
+    const T& get(EntityIndex entity) const {
+        auto component = tryGet(entity);
         if (!component)
             throw std::out_of_range("Entity does not have this component");
         return *component;
     }
 
-    T& get(Entity ID)  {
-        auto component = tryGet(ID);
+    T& get(EntityIndex entity) {
+        auto component = tryGet(entity);
         if (!component)
             throw std::out_of_range("Entity does not have this component");
         return *component;
     }
 
-    bool has(Entity ID) const {
-        return ID < sparse.size() && sparse[ID] != EMPTY;
+    bool has(EntityIndex entity) const {
+        return entity < sparse.size() && sparse[entity] != EMPTY;
     }
 
-    void remove(Entity ID) override {
-        if (ID >= sparse.size() || sparse[ID] == EMPTY)
+    void remove(EntityIndex entity) override {
+        if (entity >= sparse.size() || sparse[entity] == EMPTY)
             return;
             
-        const std::size_t index = sparse[ID];
+        const std::size_t index = sparse[entity];
         const std::size_t lastIndex = data.size() - 1;
 
         if (index != lastIndex) {
@@ -98,7 +97,7 @@ public:
         }
         data.pop_back();
         entities.pop_back();
-        sparse[ID] = EMPTY;
+        sparse[entity] = EMPTY;
     }
 
     void clear() noexcept {
@@ -112,14 +111,14 @@ public:
     }
 
     // Get a read-only view of the entities that have this component type.
-    std::span<const Entity> getEntities() const noexcept {
+    std::span<const EntityIndex> getEntities() const noexcept {
         return entities;
     }
 
 private:
     std::vector<std::size_t> sparse;
-    std::vector<Entity> entities;
+    std::vector<EntityIndex> entities;
     std::vector<T> data;
 };
 
-#endif // COMPONENTSTORAGE_HPP
+#endif /* COMPONENTSTORAGE_HPP */
